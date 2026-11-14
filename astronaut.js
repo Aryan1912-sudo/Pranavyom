@@ -87,7 +87,6 @@
     const t = $('toast'); t.textContent = msg; t.hidden = false;
     clearTimeout(toast.timer); toast.timer = setTimeout(() => { t.hidden = true; }, 2400);
   }
-  document.querySelectorAll('[data-soon]').forEach(b => b.addEventListener('click', () => toast('This module is built in a later interface.')));
 
   /* Results of today's battery, one entry per test */
   const results = {};
@@ -432,6 +431,7 @@
       evals.map(e => '<div class="result"><b class="lvl-' + (e.level === 'none' ? 'none' : e.level) + '" style="' + (e.level === 'none' ? 'color:#A1A1A1' : '') + '">' + WORD[e.level] +
         '</b><span><strong>' + e.area + ':</strong> ' + esc(e.text) + '</span></div>').join('');
     openModal('Today\'s biomarkers', html);
+    document.dispatchEvent(new CustomEvent('deck:submitted', { detail: record }));   // tells modules.js
   });
 
   $('transmitBtn').addEventListener('click', function () {
@@ -443,6 +443,13 @@
       'One-way signal delay today: about <b style="color:#F5C518">8.5 minutes</b> (simulated).</p>' +
       '<pre style="margin-top:12px;max-height:240px;overflow:auto;background:#151515;padding:12px;border-radius:10px;font-size:.75rem;white-space:pre-wrap">' + esc(json) + '</pre>');
   });
+
+  /* Shared with modules.js (Home, Action Center, Trends …) */
+  window.PZDeck = {
+    crew: crew, crewList: CREW, base: BASE, missionDay: MISSION_DAY,
+    results: results, evaluate: evaluate, recordKey: RECORD_KEY,
+    toast: toast, openModal: openModal, esc: esc
+  };
 
   $('resetBtn').addEventListener('click', function () {
     if (this.dataset.confirm) { location.reload(); return; }
