@@ -1,338 +1,169 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ASTRA-HEALTH | Secure Login</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PRANAVYOM ZERO-GRAM · Astronaut Health Monitoring Platform</title>
+  <meta name="description" content="PRANAVYOM ZERO-GRAM: an astronaut health monitoring platform. Every mission begins with the people behind it.">
+  <meta name="theme-color" content="#090909">
 
-<style>
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Segoe UI', sans-serif;
-}
+  <!-- Fonts: Anton for the giant title, Inter for everything else.
+       Without internet the page falls back to system fonts. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-body {
-    min-height: 100vh;
-    background:
-      radial-gradient(ellipse at top, #123b63, transparent 55%),
-      linear-gradient(135deg, #020817, #071c35, #020817);
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-}
-
-.container {
-    width: 100%;
-    max-width: 480px;
-    padding: 35px;
-    background: rgba(9, 28, 51, 0.94);
-    border: 1px solid #167ab0;
-    border-radius: 22px;
-    box-shadow: 0 0 35px rgba(0, 183, 255, 0.15);
-    text-align: center;
-}
-
-.logo {
-    color: #42dfff;
-    font-size: 29px;
-    font-weight: 800;
-    letter-spacing: 3px;
-}
-
-.subtitle {
-    color: #80bcd8;
-    font-size: 11px;
-    letter-spacing: 3px;
-    margin-top: 7px;
-}
-
-.status {
-    display: inline-block;
-    margin-top: 20px;
-    color: #43e6ad;
-    border: 1px solid #238f73;
-    border-radius: 20px;
-    padding: 6px 15px;
-    font-size: 12px;
-}
-
-h2 {
-    margin-top: 30px;
-    font-size: 25px;
-}
-
-.description {
-    color: #9bbbd0;
-    margin-top: 9px;
-    font-size: 14px;
-}
-
-.profile {
-    margin: 25px 0;
-    padding: 20px;
-    border: 1px solid #247eac;
-    border-radius: 15px;
-    background: #102c49;
-}
-
-.avatar {
-    width: 75px;
-    height: 75px;
-    margin: auto;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #087eac, #243d75);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: #65e5ff;
-    font-size: 26px;
-    font-weight: bold;
-    border: 3px solid #45dfff;
-}
-
-.profile h3 {
-    margin-top: 12px;
-    font-size: 19px;
-}
-
-.profile p {
-    color: #9fc3db;
-    font-size: 13px;
-    margin-top: 5px;
-}
-
-.role {
-    display: inline-block;
-    margin-top: 10px;
-    padding: 6px 17px;
-    border-radius: 20px;
-    color: #43dfff;
-    background: #103f60;
-    font-size: 12px;
-}
-
-.pin-label {
-    margin: 20px 0 14px;
-    color: #b4d1e2;
-    font-size: 14px;
-}
-
-.pin-display {
-    display: flex;
-    justify-content: center;
-    gap: 16px;
-    margin-bottom: 22px;
-}
-
-.pin-dot {
-    width: 14px;
-    height: 14px;
-    border: 2px solid #42dfff;
-    border-radius: 50%;
-}
-
-.pin-dot.filled {
-    background: #42dfff;
-    box-shadow: 0 0 12px #42dfff;
-}
-
-.keypad {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-    max-width: 300px;
-    margin: auto;
-}
-
-.key {
-    height: 57px;
-    background: #122f4d;
-    color: white;
-    border: 1px solid #28618a;
-    border-radius: 12px;
-    font-size: 21px;
-    cursor: pointer;
-    transition: 0.2s;
-}
-
-.key:hover {
-    background: #15547b;
-    border-color: #42dfff;
-}
-
-.key:active {
-    transform: scale(0.95);
-}
-
-.login-btn {
-    width: 100%;
-    margin-top: 25px;
-    padding: 15px;
-    border: none;
-    border-radius: 12px;
-    background: linear-gradient(90deg, #08a9d8, #43eaff);
-    color: #031525;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.login-btn:disabled {
-    opacity: 0.45;
-    cursor: not-allowed;
-}
-
-.message {
-    margin-top: 15px;
-    min-height: 20px;
-    font-size: 13px;
-    color: #ff7777;
-}
-
-.switch {
-    display: inline-block;
-    margin-top: 20px;
-    color: #43dfff;
-    text-decoration: none;
-    font-size: 13px;
-}
-
-.footer {
-    margin-top: 28px;
-    color: #789bb4;
-    font-size: 11px;
-    line-height: 1.8;
-}
-
-@media(max-width: 420px) {
-    .container {
-        padding: 22px;
-    }
-    .logo {
-        font-size: 23px;
-    }
-}
-</style>
+  <!-- File 2: the look -->
+  <link rel="stylesheet" href="style.css">
 </head>
 
-<body>
+<body class="is-loading">
 
-<div class="container">
+  <!-- The whole screen sits inside one framed panel -->
+  <div class="frame" id="frame">
 
-    <div class="logo">✦ ASTRA-HEALTH</div>
-    <div class="subtitle">ZERO-GRAM HEALTH CHECK</div>
-
-    <div class="status">● SECURE ACCESS SYSTEM</div>
-
-    <h2>Welcome Back, Astronaut</h2>
-    <p class="description">
-        Authenticate to access your personal health dashboard.
-    </p>
-
-    <div class="profile">
-        <div class="avatar">ER</div>
-        <h3>Elena Rodriguez</h3>
-        <p>AST-006</p>
-        <span class="role">RESEARCHER</span>
+    <!-- Decorative space background: stars and soft yellow glows -->
+    <div class="space" aria-hidden="true">
+      <div class="space__stars space__stars--far"></div>
+      <div class="space__stars space__stars--near"></div>
+      <div class="space__glow space__glow--left"></div>
+      <div class="space__glow space__glow--right"></div>
     </div>
 
-    <div class="pin-label">ENTER YOUR 4-DIGIT SECURITY PIN</div>
+    <!-- ======================= TOP BAR ======================= -->
+    <header class="topbar">
+      <div class="topbar__logo">PRANAVYOM<sup>®</sup></div>
+      <div class="topbar__status">
+        <span class="topbar__dot" aria-hidden="true"></span>
+        Mission link active
+      </div>
+      <nav class="topbar__nav" aria-label="Main">
+        <span class="topbar__item">Mission</span>
+        <span class="topbar__item">Crew</span>
+        <span class="topbar__item">About</span>
+        <button class="topbar__cta" type="button" data-enter-mission>Enter mission <span aria-hidden="true">↗</span></button>
+      </nav>
+    </header>
 
-    <div class="pin-display" id="pinDisplay">
-        <div class="pin-dot"></div>
-        <div class="pin-dot"></div>
-        <div class="pin-dot"></div>
-        <div class="pin-dot"></div>
-    </div>
+    <!-- ======================= WELCOME SCREEN ======================= -->
+    <main class="hero" id="welcomeScreen">
 
-    <div class="keypad">
-        <button class="key" onclick="addPin('1')">1</button>
-        <button class="key" onclick="addPin('2')">2</button>
-        <button class="key" onclick="addPin('3')">3</button>
-        <button class="key" onclick="addPin('4')">4</button>
-        <button class="key" onclick="addPin('5')">5</button>
-        <button class="key" onclick="addPin('6')">6</button>
-        <button class="key" onclick="addPin('7')">7</button>
-        <button class="key" onclick="addPin('8')">8</button>
-        <button class="key" onclick="addPin('9')">9</button>
-        <button class="key" onclick="clearPin()">C</button>
-        <button class="key" onclick="addPin('0')">0</button>
-        <button class="key" onclick="deletePin()">⌫</button>
-    </div>
+      <h1 class="hero__title">
+        <!-- Big white word sits BEHIND the astronaut -->
+        <span class="hero__word hero__word--back">PRANAVYOM</span>
+        <!-- Big yellow word sits IN FRONT of the astronaut -->
+        <span class="hero__word hero__word--front">ZERO-GRAM</span>
+      </h1>
 
-    <button class="login-btn" id="loginBtn"
-            onclick="login()" disabled>
-        AUTHENTICATE & CONTINUE →
-    </button>
+      <!-- Original illustrated astronaut (drawn in code, no image file needed) -->
+      <figure class="hero__astronaut" id="astronaut">
+        <div class="hero__halo" aria-hidden="true"></div>
+        <svg viewBox="0 0 600 640" role="img" aria-label="Illustrated astronaut with a glowing yellow visor">
+          <defs>
+            <radialGradient id="helmetShade" cx="0.38" cy="0.3" r="0.75">
+              <stop offset="0" stop-color="#4a4a48"/>
+              <stop offset="0.55" stop-color="#262625"/>
+              <stop offset="1" stop-color="#0f0f0f"/>
+            </radialGradient>
+            <linearGradient id="suitShade" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#333331"/>
+              <stop offset="1" stop-color="#121212"/>
+            </linearGradient>
+            <linearGradient id="visorGlass" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#1c1c1b"/>
+              <stop offset="0.5" stop-color="#060606"/>
+              <stop offset="1" stop-color="#000000"/>
+            </linearGradient>
+            <linearGradient id="ringMetal" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0" stop-color="#2b2b2a"/>
+              <stop offset="0.5" stop-color="#5c5c59"/>
+              <stop offset="1" stop-color="#2b2b2a"/>
+            </linearGradient>
+            <filter id="yellowGlow" x="-50%" y="-200%" width="200%" height="500%">
+              <feGaussianBlur stdDeviation="9" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
 
-    <div class="message" id="message"></div>
+          <!-- shoulders and chest -->
+          <path d="M30 640 C 40 520 130 452 300 446 C 470 452 560 520 570 640 Z" fill="url(#suitShade)"/>
+          <path d="M92 560 C 160 520 440 520 508 560" fill="none" stroke="#3d3d3b" stroke-width="3"/>
+          <path d="M70 604 C 150 566 450 566 530 604" fill="none" stroke="#3d3d3b" stroke-width="3"/>
+          <!-- harness straps -->
+          <path d="M190 470 L 220 640" stroke="#0b0b0b" stroke-width="26" stroke-linecap="round"/>
+          <path d="M410 470 L 380 640" stroke="#0b0b0b" stroke-width="26" stroke-linecap="round"/>
+          <!-- mission patch: orbit ring -->
+          <circle cx="455" cy="560" r="24" fill="#121212" stroke="#F5C518" stroke-width="3"/>
+          <ellipse cx="455" cy="560" rx="15" ry="6" fill="none" stroke="#F5C518" stroke-width="2" transform="rotate(-25 455 560)"/>
+          <!-- chest status lights -->
+          <rect x="262" y="520" width="76" height="30" rx="8" fill="#0b0b0b"/>
+          <circle cx="282" cy="535" r="5" fill="#F5C518"/>
+          <circle cx="300" cy="535" r="5" fill="#5a5a58"/>
+          <circle cx="318" cy="535" r="5" fill="#5a5a58"/>
 
-    <a class="switch" href="index.html">
-        ← Switch Astronaut Profile
-    </a>
+          <!-- neck ring -->
+          <ellipse cx="300" cy="440" rx="150" ry="34" fill="url(#ringMetal)"/>
+          <ellipse cx="300" cy="434" rx="132" ry="24" fill="#151515"/>
 
-    <div class="footer">
-        ASTRA-HEALTH · CREW MEDICAL TERMINAL<br>
-        AUTHORIZED CREW ACCESS ONLY
-    </div>
+          <!-- side helmet modules with yellow rings -->
+          <rect x="96" y="200" width="56" height="112" rx="24" fill="#1b1b1a"/>
+          <rect x="448" y="200" width="56" height="112" rx="24" fill="#1b1b1a"/>
+          <circle cx="124" cy="256" r="14" fill="none" stroke="#F5C518" stroke-width="3"/>
+          <circle cx="476" cy="256" r="14" fill="none" stroke="#F5C518" stroke-width="3"/>
 
-</div>
+          <!-- antenna -->
+          <path d="M430 118 L 470 46" stroke="#4a4a48" stroke-width="5" stroke-linecap="round"/>
+          <circle cx="472" cy="42" r="7" fill="#F5C518" filter="url(#yellowGlow)"/>
 
-<script>
-let pin = "";
+          <!-- helmet shell -->
+          <circle cx="300" cy="258" r="176" fill="url(#helmetShade)"/>
+          <path d="M170 150 A 176 176 0 0 1 380 96" fill="none" stroke="#ffffff" stroke-opacity="0.18" stroke-width="6" stroke-linecap="round"/>
 
-// DEMO ONLY: replace with server-side authentication.
-const demoPin = "2468";
+          <!-- visor -->
+          <rect x="160" y="186" width="280" height="150" rx="70" fill="url(#visorGlass)" stroke="#333331" stroke-width="4"/>
+          <!-- glowing HUD band -->
+          <rect x="196" y="252" width="208" height="14" rx="7" fill="#F5C518" filter="url(#yellowGlow)"/>
+          <!-- HUD ticks -->
+          <rect x="226" y="282" width="18" height="4" rx="2" fill="#F5C518" opacity="0.6"/>
+          <rect x="252" y="282" width="10" height="4" rx="2" fill="#F5C518" opacity="0.4"/>
+          <rect x="356" y="282" width="18" height="4" rx="2" fill="#F5C518" opacity="0.6"/>
+          <!-- glass reflections -->
+          <path d="M196 214 Q 230 196 290 196" fill="none" stroke="#ffffff" stroke-opacity="0.35" stroke-width="6" stroke-linecap="round"/>
+          <path d="M392 306 L 412 286" stroke="#ffffff" stroke-opacity="0.2" stroke-width="5" stroke-linecap="round"/>
+        </svg>
+      </figure>
 
-function addPin(number) {
-    if (pin.length < 4) {
-        pin += number;
-        updateDisplay();
-    }
-}
+      <!-- Left: subtitle, tagline and the main button -->
+      <section class="hero__intro">
+        <span class="hero__orbit" aria-hidden="true"></span>
+        <p class="hero__subtitle">Astronaut Health Monitoring Platform</p>
+        <p class="hero__tagline">Every mission begins with the <em>people</em> behind it.</p>
+        <button class="enter-btn" id="enterMissionBtn" type="button" data-enter-mission>
+          ENTER MISSION <span class="enter-btn__arrow" aria-hidden="true">→</span>
+        </button>
+      </section>
 
-function deletePin() {
-    pin = pin.slice(0, -1);
-    updateDisplay();
-}
+      <!-- Right edge: small vertical mission label -->
+      <p class="hero__side" aria-hidden="true">Mars transit · Mission day 34</p>
+    </main>
 
-function clearPin() {
-    pin = "";
-    updateDisplay();
-    document.getElementById("message").textContent = "";
-}
+    <!-- ======================= NEXT INTERFACE (placeholder) =======================
+         "Enter mission" opens this for now. It will be replaced by the
+         astronaut profile selection page in the next step. -->
+    <section class="next-screen" id="nextScreen" hidden>
+      <div class="next-screen__card">
+        <p class="hero__subtitle">Next interface</p>
+        <h2>Astronaut profile selection</h2>
+        <p>The crew profiles will appear here. This screen is built in the next step.</p>
+        <button class="back-btn" id="backBtn" type="button">← Back to welcome</button>
+      </div>
+    </section>
 
-function updateDisplay() {
-    const dots = document.querySelectorAll(".pin-dot");
+    <!-- Black fade used when moving between screens -->
+    <div class="screen-fade" id="screenFade" aria-hidden="true"></div>
+  </div>
 
-    dots.forEach((dot, index) => {
-        dot.classList.toggle("filled", index < pin.length);
-    });
-
-    document.getElementById("loginBtn").disabled =
-        pin.length !== 4;
-}
-
-function login() {
-    const message = document.getElementById("message");
-
-    if (pin === demoPin) {
-        message.style.color = "#43e6ad";
-        message.textContent = "Access granted! Opening dashboard...";
-
-        setTimeout(() => {
-            window.location.href = "dashboard.html";
-        }, 800);
-
-    } else {
-        message.style.color = "#ff7777";
-        message.textContent = "Incorrect PIN. Please try again.";
-        pin = "";
-        updateDisplay();
-    }
-}
-</script>
+  <!-- File 3: the behaviour -->
+  <script src="script.js"></script>
+</body>
+</html>
