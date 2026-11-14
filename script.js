@@ -1,7 +1,7 @@
 /* ==========================================================
    PRANAVYOM ZERO-GRAM — Welcome screen behaviour
    1. Marks the page as loaded
-   2. "Enter mission" fades out and opens the next interface
+   2. "Enter mission" fades out and opens the crew portal
    3. Keeps the giant title inside the frame on every screen size
    4. Moves the astronaut gently with the mouse (desktop only)
    ========================================================== */
@@ -22,10 +22,8 @@
   });
 
   /* ---------- 2. Navigation ----------
-     One place decides where "Enter mission" goes.
-     LATER: when the profiles page exists, change NEXT_PAGE to its
-     file name (for example 'profiles.html') and it will open that file. */
-  const NEXT_PAGE = null; // null = show the built-in placeholder for now
+     "Enter mission" opens the crew selection portal (Interface 2). */
+  const NEXT_PAGE = 'crew.html';
 
   function fadeThen(action) {
     fade.classList.add('is-active');
@@ -61,11 +59,11 @@
   document.querySelectorAll('[data-enter-mission]').forEach(function (btn) {
     btn.addEventListener('click', goToProfileSelection);
   });
-  backBtn.addEventListener('click', backToWelcome);
+  if (backBtn) backBtn.addEventListener('click', backToWelcome);
 
   // Keyboard: Escape returns from the placeholder
   document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape' && !nextScreen.hidden) backToWelcome();
+    if (e.key === 'Escape' && nextScreen && !nextScreen.hidden) backToWelcome();
   });
 
   // Make the function available to future interfaces
@@ -76,10 +74,10 @@
      used. This shrinks each word just enough so it never gets cut off. */
   function fitTitle() {
     const hero = document.getElementById('welcomeScreen');
-    if (hero.hidden || hero.clientWidth === 0) return;         // screen not visible right now
+    if (!hero || hero.hidden || hero.clientWidth === 0) return;   // screen not visible right now
     const mobile = window.matchMedia('(max-width: 700px)').matches;
     document.querySelectorAll('.hero__word').forEach(function (word) {
-      word.style.fontSize = '';                                  // back to the CSS size
+      word.style.fontSize = '';                                    // back to the CSS size
       const room = hero.clientWidth * (mobile ? 0.9 : 0.93);
       const used = word.scrollWidth;
       if (used > room) {

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meet Your Crew · PRANAVYOM ZERO-GRAM</title>
+  <meta name="description" content="PRANAVYOM ZERO-GRAM crew selection portal: 16 fictional astronauts in the mission personnel directory.">
+  <meta name="theme-color" content="#090909">
+
+  <!-- Same fonts as the welcome screen -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Interface 2 styles -->
+  <link rel="stylesheet" href="crew.css">
+</head>
+
+<body>
+  <!-- Same framed panel and space background as the welcome screen -->
+  <div class="frame">
+
+    <div class="space" aria-hidden="true">
+      <div class="space__stars space__stars--far"></div>
+      <div class="space__stars space__stars--near"></div>
+      <div class="space__glow space__glow--left"></div>
+      <div class="space__glow space__glow--right"></div>
+    </div>
+
+    <!-- ======================= TOP BAR ======================= -->
+    <header class="topbar">
+      <a class="topbar__back" href="index.html" aria-label="Back to the welcome screen">← Back</a>
+
+      <div class="topbar__brand">
+        <span class="topbar__name">PRANAVYOM <span class="topbar__accent">ZERO-GRAM</span></span>
+        <span class="topbar__sub">Astronaut Health Monitoring Platform</span>
+      </div>
+
+      <div class="topbar__status">
+        <span class="topbar__dot" aria-hidden="true"></span>
+        Mission link active
+      </div>
+
+      <div class="topbar__count">
+        <strong id="crewCount">16</strong> personnel registered
+      </div>
+    </header>
+
+    <!-- ======================= CREW PORTAL ======================= -->
+    <main class="crew" id="crewPortal">
+
+      <!-- Heading -->
+      <section class="crew__intro">
+        <p class="crew__eyebrow">Mission personnel directory</p>
+        <h1 class="crew__title">Meet your crew<span class="crew__dot">.</span></h1>
+        <p class="crew__lede">Meet the individuals behind the mission. Explore the crew and their specialised roles.</p>
+      </section>
+
+      <!-- Range, page number and the selected astronaut -->
+      <div class="crew__meta">
+        <p class="crew__range" id="crewRange" aria-live="polite">Viewing 01–08 of 16</p>
+        <p class="crew__selected" id="crewSelected" aria-live="polite">No crew member selected</p>
+        <p class="crew__page" id="crewPage">01 / 02</p>
+      </div>
+
+      <!-- The roster: two pages of 8 cards, with an arrow on each side -->
+      <div class="roster" id="roster">
+        <button class="roster__nav roster__nav--prev" id="prevBtn" type="button" aria-label="Show crew 01 to 08" disabled>
+          <span class="roster__arrow" aria-hidden="true">←</span>
+        </button>
+
+        <div class="roster__viewport">
+          <!-- crew.js builds the 16 cards and puts them in these two pages -->
+          <div class="roster__track" id="rosterTrack">
+            <div class="roster__page" id="page1" aria-label="Crew 01 to 08"></div>
+            <div class="roster__page" id="page2" aria-label="Crew 09 to 16"></div>
+          </div>
+        </div>
+
+        <button class="roster__nav roster__nav--next" id="nextBtn" type="button" aria-label="Show crew 09 to 16">
+          <span class="roster__arrow" aria-hidden="true">→</span>
+        </button>
+      </div>
+
+      <!-- Shown only if JavaScript is switched off -->
+      <noscript><p class="crew__lede">Please enable JavaScript to see the crew.</p></noscript>
+    </main>
+
+    <!-- ======================= CARD TEMPLATE =======================
+         crew.js copies this once for every astronaut and fills it in. -->
+    <template id="crewCardTemplate">
+      <article class="crew-card" role="button" tabindex="0" aria-pressed="false">
+        <div class="crew-card__photo">
+          <img class="crew-card__img" alt="" loading="lazy">
+          <span class="crew-card__id"></span>
+          <span class="crew-card__badge">✓ Selected</span>
+        </div>
+        <div class="crew-card__body">
+          <h2 class="crew-card__name"></h2>
+          <p class="crew-card__role"></p>
+          <p class="crew-card__spec"></p>
+          <blockquote class="crew-card__quote"></blockquote>
+        </div>
+      </article>
+    </template>
+
+    <footer class="crew__footer">
+      <span>All crew members are fictional, for demonstration only.</span>
+      <span>Decision support only, not medical diagnosis.</span>
+    </footer>
+  </div>
+
+  <!-- Interface 2 behaviour and crew data -->
+  <script src="crew.js"></script>
+</body>
+</html>
