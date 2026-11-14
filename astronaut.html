@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Astronaut Flight Deck · PRANAVYOM ZERO-GRAM</title>
+  <meta name="description" content="PRANAVYOM ZERO-GRAM astronaut flight deck: the daily clinical battery of six zero-gram health tests.">
+  <meta name="theme-color" content="#090909">
+
+  <!-- Fonts: Space Grotesk (telemetry labels), Inter (text), Anton (big numbers) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Interface 3 styles (File 2) -->
+  <link rel="stylesheet" href="astronaut.css">
+</head>
+
+<body>
+  <div class="deck">
+
+    <!-- ======================= SIDEBAR ======================= -->
+    <aside class="side">
+      <a class="side__brand" href="index.html" title="Back to the welcome screen">
+        <span class="side__logo" aria-hidden="true">◎</span>
+        <span>
+          <span class="side__name">PRANAVYOM</span>
+          <span class="side__sub">Zero-Gram Flight</span>
+        </span>
+      </a>
+
+      <nav class="side__nav" aria-label="Astronaut modules">
+        <button class="side__item is-active" type="button" aria-current="page"><span aria-hidden="true">◉</span> Home (Profile)</button>
+        <button class="side__item" type="button" data-soon><span aria-hidden="true">☑</span> Daily Check-In</button>
+        <button class="side__item" type="button" data-soon><span aria-hidden="true">⚡</span> Action Center</button>
+        <button class="side__item" type="button" data-soon><span aria-hidden="true">📈</span> Health Trends</button>
+        <button class="side__item" type="button" data-soon><span aria-hidden="true">💊</span> Smart Pharmacy</button>
+        <a class="side__item" href="crew.html"><span aria-hidden="true">👥</span> Crew &amp; Buddy</a>
+        <button class="side__item" type="button" data-soon><span aria-hidden="true">➤</span> Reports to Earth</button>
+      </nav>
+
+      <div class="side__link">
+        <div class="side__link-row"><span>Deep space link</span><b><span class="dot" aria-hidden="true"></span> 99.4%</b></div>
+        <div class="side__link-name">Mars Convoy #04</div>
+      </div>
+    </aside>
+
+    <!-- ======================= MAIN AREA ======================= -->
+    <div class="main">
+
+      <!-- Top bar -->
+      <header class="top">
+        <span class="top__status"><span class="dot" aria-hidden="true"></span> Mission link active</span>
+        <span class="top__transit">🚀 Mars transit · <b>Day 34 / 450</b></span>
+        <label class="top__select">
+          <span>Astronaut:</span>
+          <select id="crewSwitch" aria-label="Switch astronaut"></select>
+        </label>
+        <a class="top__back" href="crew.html">← Crew portal</a>
+      </header>
+
+      <!-- Clinical battery header with the astronaut's identity -->
+      <section class="battery glow-card">
+        <div class="battery__who">
+          <img class="battery__avatar" id="crewAvatar" alt="">
+          <div>
+            <p class="battery__id" id="crewId">CREW-00</p>
+            <h1 class="battery__name" id="crewName">Astronaut</h1>
+            <p class="battery__role" id="crewRole">Designation</p>
+          </div>
+        </div>
+
+        <div class="battery__info">
+          <p class="battery__kicker">Clinical battery · Protocol 04-G <span class="chip">SANS / CNS monitor</span></p>
+          <h2 class="battery__title">Daily Check-In — All 6 Zero-Gram Clinical Biomarkers</h2>
+          <div class="battery__row">
+            <p class="battery__progress"><span class="dot" aria-hidden="true"></span> <b id="testsDone">0 of 6</b> tests complete · <span id="timeLeft">~3.5 min remaining</span></p>
+            <p class="battery__cache">💾 Local cache: nominal (0 lag)</p>
+          </div>
+          <button class="cta" id="submitBtn" type="button">Submit all daily biomarkers →</button>
+        </div>
+      </section>
+
+      <p class="demo-note">Demonstration data: results are compared with this astronaut's fictional pre-flight baseline. Not real medical measurements.</p>
+
+      <!-- ======================= THE SIX TESTS ======================= -->
+      <section class="tests" aria-label="Daily clinical tests">
+
+        <!-- TEST 01 -->
+        <article class="test glow-card" id="test1">
+          <header class="test__head">
+            <div>
+              <p class="test__kicker">Test 01 // Neuro-motor speed</p>
+              <h3 class="test__title">Reaction Tap &amp; Kinematics</h3>
+              <p class="test__desc">Reaction latency, tap accuracy and finger steadiness.</p>
+            </div>
+            <span class="tag" id="tag1">Ready</span>
+          </header>
+          <div class="pad" id="reactionPad">
+            <span class="pad__count">Countdown: <b id="rtCountdown">20.0s</b></span>
+            <button class="reticle" id="reticle" type="button" aria-label="Reaction target" hidden>⌖</button>
+            <button class="pill-btn" id="rtStart" type="button">▶ Start · tap the reticle pulse</button>
+          </div>
+          <div class="stats">
+            <div class="stat"><span>Latency</span><b id="rtLatency">—</b><small id="rtLatencyNote">median</small></div>
+            <div class="stat"><span>Offset</span><b id="rtOffset">—</b><small>from centre</small></div>
+            <div class="stat"><span>Dwell</span><b id="rtDwell">—</b><small>finger on glass</small></div>
+            <div class="stat"><span>Scatter</span><b id="rtScatter">—</b><small id="rtScatterNote">tap spread</small></div>
+          </div>
+        </article>
+
+        <!-- TEST 02 -->
+        <article class="test glow-card" id="test2">
+          <header class="test__head">
+            <div>
+              <p class="test__kicker">Test 02 // SANS &amp; fluid shift</p>
+              <h3 class="test__title">Ocular Amsler &amp; Contrast</h3>
+              <p class="test__desc">Checks for wavy vision and fading contrast caused by fluid shifting to the head.</p>
+            </div>
+            <span class="tag" id="tag2">Pelli-Robson</span>
+          </header>
+          <div class="sans">
+            <div class="panel">
+              <p class="panel__head">Amsler visor <b>Fixate centre</b></p>
+              <div class="amsler" id="amsler" aria-label="Amsler grid: tap squares that look wavy or missing"></div>
+              <p class="panel__foot">Distortion? <b id="amslerStatus">Grid clear</b></p>
+            </div>
+            <div class="panel">
+              <p class="panel__head">Contrast sensitivity <b id="contrastScore">—</b></p>
+              <div class="chart" id="contrastChart" aria-label="Tap the lowest row you can still read"></div>
+              <p class="panel__foot">Lowest readable: <b id="lowestRow">tap a row</b></p>
+            </div>
+          </div>
+          <p class="test__foot">SANS screen: <b id="sansResult">awaiting check</b></p>
+        </article>
+
+        <!-- TEST 03 -->
+        <article class="test glow-card" id="test3">
+          <header class="test__head">
+            <div>
+              <p class="test__kicker">Test 03 // Cognition battery</p>
+              <h3 class="test__title">Spatial Memory Recall</h3>
+              <p class="test__desc">Spots slowed thinking from high cabin CO₂ or sleep debt.</p>
+            </div>
+            <span class="tag" id="tag3">Stage 0 / 7</span>
+          </header>
+          <div class="memory">
+            <div class="tiles" id="memTiles" aria-label="Memory tiles"></div>
+            <div class="panel memory__side">
+              <p class="panel__head">Sequence <b id="memSeq">0 / 7 tiles</b></p>
+              <div class="bar"><span id="memBar"></span></div>
+              <p class="kv"><span>Error rate</span><b id="memErr">—</b></p>
+              <p class="kv"><span>Memory span</span><b id="memSpan">—</b></p>
+              <button class="pill-btn" id="memStart" type="button">▶ Start sequence</button>
+            </div>
+          </div>
+          <p class="test__foot">Cabin CO₂ (demo sensor): <b id="cabinCo2">0.32% · normal</b></p>
+        </article>
+
+        <!-- TEST 04 -->
+        <article class="test glow-card" id="test4">
+          <header class="test__head">
+            <div>
+              <p class="test__kicker">Test 04 // Musculoskeletal</p>
+              <h3 class="test__title">Grip Hold &amp; Bone-Load</h3>
+              <p class="test__desc">15-second steady press-and-hold, plus today's ARED resistance workout.</p>
+            </div>
+            <span class="tag" id="tag4">ARED synced</span>
+          </header>
+          <div class="grip">
+            <button class="hold" id="holdBtn" type="button">
+              <span class="hold__icon" aria-hidden="true">☝</span>
+              <span class="hold__label" id="holdLabel">Hold sensor</span>
+              <span class="hold__time" id="holdTime">15.0s sustain</span>
+            </button>
+            <div class="panel grip__side">
+              <p class="kv"><span>Hold steadiness</span><b id="gripTremor">—</b></p>
+              <svg class="spark" id="gripSpark" viewBox="0 0 200 40" preserveAspectRatio="none" aria-hidden="true"><polyline id="gripLine" points="0,20 200,20"/></svg>
+              <p class="kv"><span>Stability</span><b id="gripStability">—</b></p>
+            </div>
+          </div>
+          <div class="field">
+            <label for="aredInput">ARED workout done today: <b id="aredValue">100%</b> of plan</label>
+            <input type="range" id="aredInput" min="0" max="120" step="5" value="100">
+          </div>
+          <p class="test__foot">Bone-load stimulus: <b id="boneLoad">on target</b></p>
+        </article>
+
+        <!-- TEST 05 -->
+        <article class="test glow-card" id="test5">
+          <header class="test__head">
+            <div>
+              <p class="test__kicker">Test 05 // Renal &amp; hydration</p>
+              <h3 class="test__title">Hydration &amp; Kidney-Stone Shield</h3>
+              <p class="test__desc">Bone calcium lost in space raises kidney-stone risk. Water is the first defence.</p>
+            </div>
+            <span class="tag" id="tag5">15-sec log</span>
+          </header>
+          <div class="water">
+            <p class="water__amount"><b id="waterNow">0.0 L</b> / 2.5 L target</p>
+            <div class="water__btns">
+              <button class="pill-btn small" id="waterMinus" type="button" aria-label="Remove 250 millilitres">− 250 mL</button>
+              <button class="pill-btn small" id="waterPlus" type="button" aria-label="Add 250 millilitres">💧 + 250 mL</button>
+            </div>
+          </div>
+          <div class="bar"><span id="waterBar"></span></div>
+          <p class="panel__head" style="margin-top:12px">Urine colour <b id="urineLabel">choose one</b></p>
+          <div class="urine" id="urine" role="radiogroup" aria-label="Urine colour"></div>
+          <div class="chips" id="suppChips">
+            <button class="chip-btn" type="button" data-supp="vitd" aria-pressed="false">Vitamin D3</button>
+            <button class="chip-btn" type="button" data-supp="calcium" aria-pressed="false">Calcium</button>
+          </div>
+          <p class="test__foot">Kidney-stone risk: <b id="stoneRisk">awaiting log</b></p>
+        </article>
+
+        <!-- TEST 06 -->
+        <article class="test glow-card" id="test6">
+          <header class="test__head">
+            <div>
+              <p class="test__kicker">Test 06 // Psych &amp; circadian</p>
+              <h3 class="test__title">Mood &amp; Mars Sol Drift</h3>
+              <p class="test__desc">How you feel today, plus your body clock on a 24 h 39 min Mars day.</p>
+            </div>
+            <span class="tag" id="tag6">Sol +39m drift</span>
+          </header>
+          <div class="sliders">
+            <label>Mood <b id="moodV">4/5</b><input type="range" id="mood" min="1" max="5" value="4"></label>
+            <label>Stress <b id="stressV">2/5</b><input type="range" id="stress" min="1" max="5" value="2"></label>
+            <label>Energy <b id="energyV">3/5</b><input type="range" id="energy" min="1" max="5" value="3"></label>
+          </div>
+          <div class="chips" id="symptomChips">
+            <button class="chip-btn" type="button" data-sym="Head fullness" aria-pressed="false">Head fullness</button>
+            <button class="chip-btn" type="button" data-sym="Space sickness" aria-pressed="false">Space sickness</button>
+            <button class="chip-btn" type="button" data-sym="Lumbar ache" aria-pressed="false">Lumbar ache</button>
+            <button class="chip-btn" type="button" data-sym="Blurred vision" aria-pressed="false">Blurred vision</button>
+            <button class="chip-btn" type="button" data-sym="Headache" aria-pressed="false">Headache</button>
+          </div>
+          <input class="journal" id="journal" type="text" maxlength="140" placeholder="One line about today (optional)">
+          <button class="pill-btn" id="moodSave" type="button">✓ Log mood &amp; symptoms</button>
+        </article>
+      </section>
+
+      <!-- ======================= BOTTOM TELEMETRY BAR ======================= -->
+      <footer class="telemetry glow-card">
+        <p class="telemetry__title"><span class="dot" aria-hidden="true"></span> Telemetry repository: <b>Deep space network comm channel ready</b></p>
+        <div class="telemetry__row">
+          <p class="telemetry__size">Transmission payload: <b id="payloadSize">0.0 KB JSON bundle</b></p>
+          <button class="ghost-btn" id="resetBtn" type="button">Reset battery</button>
+          <button class="cta" id="transmitBtn" type="button">☁ Transmit to Earth &amp; Flight Surgeon</button>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Results / transmission pop-up -->
+  <div class="modal" id="modal" hidden>
+    <div class="modal__box glow-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <h2 id="modalTitle">Results</h2>
+      <div id="modalBody"></div>
+      <button class="cta" id="modalClose" type="button">Close</button>
+    </div>
+  </div>
+
+  <!-- Small message at the bottom of the screen -->
+  <div class="toast" id="toast" hidden></div>
+
+  <!-- Interface 3 behaviour (File 3) -->
+  <script src="astronaut.js"></script>
+</body>
+</html>
