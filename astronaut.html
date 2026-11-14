@@ -14,6 +14,8 @@
 
   <!-- Interface 3 styles (File 2) -->
   <link rel="stylesheet" href="astronaut.css">
+  <!-- Interface 3 sidebar modules (Home, Action Center, Trends …) -->
+  <link rel="stylesheet" href="modules.css">
 </head>
 
 <body>
@@ -30,13 +32,14 @@
       </a>
 
       <nav class="side__nav" aria-label="Astronaut modules">
-        <button class="side__item is-active" type="button" aria-current="page"><span aria-hidden="true">◉</span> Home (Profile)</button>
-        <button class="side__item" type="button" data-soon><span aria-hidden="true">☑</span> Daily Check-In</button>
-        <button class="side__item" type="button" data-soon><span aria-hidden="true">⚡</span> Action Center</button>
-        <button class="side__item" type="button" data-soon><span aria-hidden="true">📈</span> Health Trends</button>
-        <button class="side__item" type="button" data-soon><span aria-hidden="true">💊</span> Smart Pharmacy</button>
-        <a class="side__item" href="crew.html"><span aria-hidden="true">👥</span> Crew &amp; Buddy</a>
-        <button class="side__item" type="button" data-soon><span aria-hidden="true">➤</span> Reports to Earth</button>
+        <!-- data-view = which screen opens (modules.js switches them) -->
+        <button class="side__item" type="button" data-view="home"><span aria-hidden="true">◉</span> Home (Profile)</button>
+        <button class="side__item" type="button" data-view="checkin"><span aria-hidden="true">☑</span> Daily Check-In</button>
+        <button class="side__item" type="button" data-view="action"><span aria-hidden="true">⚡</span> Action Center</button>
+        <button class="side__item" type="button" data-view="trends"><span aria-hidden="true">📈</span> Health Trends</button>
+        <button class="side__item" type="button" data-view="pharmacy"><span aria-hidden="true">💊</span> Smart Pharmacy</button>
+        <button class="side__item" type="button" data-view="crew"><span aria-hidden="true">👥</span> Crew &amp; Buddy</button>
+        <button class="side__item" type="button" data-view="reports"><span aria-hidden="true">➤</span> Reports to Earth</button>
       </nav>
 
       <div class="side__link">
@@ -58,6 +61,9 @@
         </label>
         <a class="top__back" href="crew.html">← Crew portal</a>
       </header>
+
+      <!-- ======================= VIEW: DAILY CHECK-IN ======================= -->
+      <div class="view" id="view-checkin">
 
       <!-- Clinical battery header with the astronaut's identity -->
       <section class="battery glow-card">
@@ -249,6 +255,12 @@
           <button class="cta" id="transmitBtn" type="button">☁ Transmit to Earth &amp; Flight Surgeon</button>
         </div>
       </footer>
+      </div><!-- end of view-checkin -->
+
+      <!-- ======================= OTHER VIEWS =======================
+           Home, Action Center, Trends, Pharmacy, Crew & Buddy, Reports.
+           modules.js draws the chosen screen in here. -->
+      <div class="view" id="view-module" hidden></div>
     </div>
   </div>
 
@@ -264,7 +276,8 @@
   <!-- Small message at the bottom of the screen -->
   <div class="toast" id="toast" hidden></div>
 
-  <!-- Interface 3 behaviour (File 3) -->
+  <!-- Interface 3 behaviour: the six tests, then the sidebar modules -->
   <script src="astronaut.js"></script>
+  <script src="modules.js"></script>
 </body>
 </html>
