@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pranavyom | Mission Crew</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    background:
+        radial-gradient(ellipse at top, #123b63, transparent 55%),
+        linear-gradient(135deg, #020817, #071c35, #020817);
+    color: white;
+    padding: 35px 20px;
+}
+
+.container {
+    max-width: 1050px;
+    margin: auto;
+    text-align: center;
+}
+
+.logo {
+    color: #42dfff;
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: 4px;
+}
+
+.subtitle {
+    color: #80bcd8;
+    font-size: 11px;
+    letter-spacing: 3px;
+    margin-top: 8px;
+}
+
+.status {
+    display: inline-block;
+    margin-top: 24px;
+    color: #43e6ad;
+    border: 1px solid #238f73;
+    border-radius: 20px;
+    padding: 7px 17px;
+    font-size: 12px;
+}
+
+h1 {
+    margin-top: 35px;
+    font-size: clamp(25px, 5vw, 36px);
+}
+
+.description {
+    color: #9bbbd0;
+    margin-top: 12px;
+    font-size: 15px;
+}
+
+.crew-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-top: 40px;
+}
+
+.crew-card {
+    background: rgba(16, 44, 73, 0.92);
+    border: 1px solid #247eac;
+    border-radius: 18px;
+    padding: 25px 15px;
+    cursor: pointer;
+    color: white;
+    transition: 0.25s;
+}
+
+.crew-card:hover {
+    transform: translateY(-7px);
+    border-color: #42dfff;
+    box-shadow: 0 0 25px rgba(0, 183, 255, 0.2);
+    background: #153b5d;
+}
+
+.avatar {
+    width: 85px;
+    height: 85px;
+    margin: auto;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #087eac, #243d75);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #65e5ff;
+    font-size: 27px;
+    font-weight: bold;
+    border: 3px solid #45dfff;
+}
+
+.crew-card h2 {
+    margin-top: 18px;
+    font-size: 20px;
+}
+
+.crew-card p {
+    color: #9fc3db;
+    margin-top: 8px;
+    font-size: 13px;
+}
+
+.role {
+    display: inline-block;
+    margin-top: 13px;
+    padding: 7px 15px;
+    border-radius: 20px;
+    color: #43dfff;
+    background: #103f60;
+    font-size: 11px;
+}
+
+.access {
+    display: block;
+    margin-top: 22px;
+    padding: 12px;
+    background: linear-gradient(90deg, #08a9d8, #43eaff);
+    color: #031525;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.footer {
+    margin-top: 45px;
+    color: #789bb4;
+    font-size: 11px;
+    line-height: 1.8;
+}
+
+@media(max-width: 750px) {
+    .crew-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media(max-width: 380px) {
+    .crew-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="logo">✦ PRANAVYOM</div>
+    <div class="subtitle">ZERO-GRAM HEALTH CHECK</div>
+
+    <div class="status">● MISSION SYSTEM ONLINE</div>
+
+    <h1>MISSION CREW</h1>
+
+    <p class="description">
+        Select an astronaut to access their personal health dashboard.
+    </p>
+
+    <div class="crew-grid" id="crewGrid"></div>
+
+    <div class="footer">
+        PRANAVYOM · CREW MEDICAL MONITORING SYSTEM<br>
+        OFFLINE MISSION ACCESS
+    </div>
+
+</div>
+
+<script>
+const astronauts = [
+    {
+        id: "ARJUN01",
+        name: "Arjun",
+        role: "Commander",
+        initials: "AR",
+        missionDay: 34
+    },
+    {
+        id: "PRIYA02",
+        name: "Priya",
+        role: "Engineer",
+        initials: "PR",
+        missionDay: 34
+    },
+    {
+        id: "LENA03",
+        name: "Lena",
+        role: "Doctor",
+        initials: "LE",
+        missionDay: 34
+    },
+    {
+        id: "SAM04",
+        name: "Sam",
+        role: "Scientist",
+        initials: "SA",
+        missionDay: 34
+    }
+];
+
+const crewGrid = document.getElementById("crewGrid");
+
+astronauts.forEach(astronaut => {
+
+    const card = document.createElement("button");
+    card.className = "crew-card";
+    card.type = "button";
+
+    card.innerHTML = `
+        <div class="avatar">${astronaut.initials}</div>
+        <h2>${astronaut.name}</h2>
+        <p>${astronaut.id}</p>
+        <span class="role">${astronaut.role}</span>
+        <span class="access">ACCESS PROFILE →</span>
+    `;
+
+    card.addEventListener("click", () => {
+        sessionStorage.setItem(
+            "selectedAstronaut",
+            JSON.stringify(astronaut)
+        );
+
+        window.location.href = "dashboard.html";
+    });
+
+    crewGrid.appendChild(card);
+});
+</script>
+
+</body>
+</html>

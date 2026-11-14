@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ASTRA-HEALTH | Secure Login</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    background:
+      radial-gradient(ellipse at top, #123b63, transparent 55%),
+      linear-gradient(135deg, #020817, #071c35, #020817);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.container {
+    width: 100%;
+    max-width: 480px;
+    padding: 35px;
+    background: rgba(9, 28, 51, 0.94);
+    border: 1px solid #167ab0;
+    border-radius: 22px;
+    box-shadow: 0 0 35px rgba(0, 183, 255, 0.15);
+    text-align: center;
+}
+
+.logo {
+    color: #42dfff;
+    font-size: 29px;
+    font-weight: 800;
+    letter-spacing: 3px;
+}
+
+.subtitle {
+    color: #80bcd8;
+    font-size: 11px;
+    letter-spacing: 3px;
+    margin-top: 7px;
+}
+
+.status {
+    display: inline-block;
+    margin-top: 20px;
+    color: #43e6ad;
+    border: 1px solid #238f73;
+    border-radius: 20px;
+    padding: 6px 15px;
+    font-size: 12px;
+}
+
+h2 {
+    margin-top: 30px;
+    font-size: 25px;
+}
+
+.description {
+    color: #9bbbd0;
+    margin-top: 9px;
+    font-size: 14px;
+}
+
+.profile {
+    margin: 25px 0;
+    padding: 20px;
+    border: 1px solid #247eac;
+    border-radius: 15px;
+    background: #102c49;
+}
+
+.avatar {
+    width: 75px;
+    height: 75px;
+    margin: auto;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #087eac, #243d75);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #65e5ff;
+    font-size: 26px;
+    font-weight: bold;
+    border: 3px solid #45dfff;
+}
+
+.profile h3 {
+    margin-top: 12px;
+    font-size: 19px;
+}
+
+.profile p {
+    color: #9fc3db;
+    font-size: 13px;
+    margin-top: 5px;
+}
+
+.role {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 6px 17px;
+    border-radius: 20px;
+    color: #43dfff;
+    background: #103f60;
+    font-size: 12px;
+}
+
+.pin-label {
+    margin: 20px 0 14px;
+    color: #b4d1e2;
+    font-size: 14px;
+}
+
+.pin-display {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 22px;
+}
+
+.pin-dot {
+    width: 14px;
+    height: 14px;
+    border: 2px solid #42dfff;
+    border-radius: 50%;
+}
+
+.pin-dot.filled {
+    background: #42dfff;
+    box-shadow: 0 0 12px #42dfff;
+}
+
+.keypad {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    max-width: 300px;
+    margin: auto;
+}
+
+.key {
+    height: 57px;
+    background: #122f4d;
+    color: white;
+    border: 1px solid #28618a;
+    border-radius: 12px;
+    font-size: 21px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.key:hover {
+    background: #15547b;
+    border-color: #42dfff;
+}
+
+.key:active {
+    transform: scale(0.95);
+}
+
+.login-btn {
+    width: 100%;
+    margin-top: 25px;
+    padding: 15px;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(90deg, #08a9d8, #43eaff);
+    color: #031525;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.login-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+.message {
+    margin-top: 15px;
+    min-height: 20px;
+    font-size: 13px;
+    color: #ff7777;
+}
+
+.switch {
+    display: inline-block;
+    margin-top: 20px;
+    color: #43dfff;
+    text-decoration: none;
+    font-size: 13px;
+}
+
+.footer {
+    margin-top: 28px;
+    color: #789bb4;
+    font-size: 11px;
+    line-height: 1.8;
+}
+
+@media(max-width: 420px) {
+    .container {
+        padding: 22px;
+    }
+    .logo {
+        font-size: 23px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="logo">✦ ASTRA-HEALTH</div>
+    <div class="subtitle">ZERO-GRAM HEALTH CHECK</div>
+
+    <div class="status">● SECURE ACCESS SYSTEM</div>
+
+    <h2>Welcome Back, Astronaut</h2>
+    <p class="description">
+        Authenticate to access your personal health dashboard.
+    </p>
+
+    <div class="profile">
+        <div class="avatar">ER</div>
+        <h3>Elena Rodriguez</h3>
+        <p>AST-006</p>
+        <span class="role">RESEARCHER</span>
+    </div>
+
+    <div class="pin-label">ENTER YOUR 4-DIGIT SECURITY PIN</div>
+
+    <div class="pin-display" id="pinDisplay">
+        <div class="pin-dot"></div>
+        <div class="pin-dot"></div>
+        <div class="pin-dot"></div>
+        <div class="pin-dot"></div>
+    </div>
+
+    <div class="keypad">
+        <button class="key" onclick="addPin('1')">1</button>
+        <button class="key" onclick="addPin('2')">2</button>
+        <button class="key" onclick="addPin('3')">3</button>
+        <button class="key" onclick="addPin('4')">4</button>
+        <button class="key" onclick="addPin('5')">5</button>
+        <button class="key" onclick="addPin('6')">6</button>
+        <button class="key" onclick="addPin('7')">7</button>
+        <button class="key" onclick="addPin('8')">8</button>
+        <button class="key" onclick="addPin('9')">9</button>
+        <button class="key" onclick="clearPin()">C</button>
+        <button class="key" onclick="addPin('0')">0</button>
+        <button class="key" onclick="deletePin()">⌫</button>
+    </div>
+
+    <button class="login-btn" id="loginBtn"
+            onclick="login()" disabled>
+        AUTHENTICATE & CONTINUE →
+    </button>
+
+    <div class="message" id="message"></div>
+
+    <a class="switch" href="index.html">
+        ← Switch Astronaut Profile
+    </a>
+
+    <div class="footer">
+        ASTRA-HEALTH · CREW MEDICAL TERMINAL<br>
+        AUTHORIZED CREW ACCESS ONLY
+    </div>
+
+</div>
+
+<script>
+let pin = "";
+
+// DEMO ONLY: replace with server-side authentication.
+const demoPin = "2468";
+
+function addPin(number) {
+    if (pin.length < 4) {
+        pin += number;
+        updateDisplay();
+    }
+}
+
+function deletePin() {
+    pin = pin.slice(0, -1);
+    updateDisplay();
+}
+
+function clearPin() {
+    pin = "";
+    updateDisplay();
+    document.getElementById("message").textContent = "";
+}
+
+function updateDisplay() {
+    const dots = document.querySelectorAll(".pin-dot");
+
+    dots.forEach((dot, index) => {
+        dot.classList.toggle("filled", index < pin.length);
+    });
+
+    document.getElementById("loginBtn").disabled =
+        pin.length !== 4;
+}
+
+function login() {
+    const message = document.getElementById("message");
+
+    if (pin === demoPin) {
+        message.style.color = "#43e6ad";
+        message.textContent = "Access granted! Opening dashboard...";
+
+        setTimeout(() => {
+            window.location.href = "dashboard.html";
+        }, 800);
+
+    } else {
+        message.style.color = "#ff7777";
+        message.textContent = "Incorrect PIN. Please try again.";
+        pin = "";
+        updateDisplay();
+    }
+}
+</script>
