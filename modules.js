@@ -333,4 +333,177 @@
       const opts = SYSTEMS.map(s => '<optgroup label="' + s.name + '">' + Object.keys(METRICS).filter(k => METRICS[k].sys === s.id)
         .map(k => '<option value="' + k + '"' + (k === key ? ' selected' : '') + '>' + METRICS[k].label + '</option>').join('') + '</optgroup>').join('');
       const m = METRICS[key], rows = series(crew.id);
-      let html = identity('Health Trends', 'The last 30 days for ' +
+      let html = identity('Health Trends', 'The last 30 days for ' + esc(crew.name) + ', compared with their own normal range.');
+      html += '<section class="m-card glow-card"><div class="m-row"><h2 class="m-h2" style="margin:0">' + m.label + ' <small>(' + m.unit + ' · ' + m.src + ')</small></h2>' +
+        '<select class="m-select" id="trendSel" aria-label="Choose a measure">' + opts + '</select></div>' + chart(key, rows) + '</section>';
+      return html + DEMO_NOTE;
+    },
+
+    /* ---------- SMART PHARMACY ---------- */
+    pharmacy: function () {
+      const st = stock();
+      let html = identity('Smart Pharmacy', 'Onboard kit stock, radiation-adjusted expiry and a safety check for ' + esc(crew.name) + '.');
+      html += '<section class="m-card glow-card"><p class="m-small">Usable life = label shelf life × 0.8 (20 % buffer for space radiation). Run-out day uses the last 14 days of crew use. Planned mission: ' + PLANNED_DAYS + ' days.' +
+        ((ALLERGIES[crew.id] || []).length ? ' <b class="m-yellow-text">Allergy on file: ' + ALLERGIES[crew.id].join(', ') + '.</b>' : '') + '</p>' +
+        '<div class="m-table-wrap"><table class="m-table"><thead><tr><th>Medicine</th><th>Use</th><th>Left</th><th>Usable until</th><th>Runs out</th><th>Alerts</th><th></th></tr></thead><tbody>' +
+        st.map(k => '<tr><td><b>' + k.name + '</b><br><small>Card ' + k.card + '</small></td><td>' + k.use + '</td><td>' + k.left + ' / ' + k.qty + '</td><td>Day ' + k.usable + '</td><td>' +
+          (k.runsOut ? 'Day ' + k.runsOut : '—') + '</td><td>' + (k.warn.length ? k.warn.map(w => '⚠ ' + esc(w)).join('<br>') : '<span class="m-ok">OK</span>') +
+          '</td><td><button class="pill-btn small" type="button" data-check="' + k.id + '">Safety check</button></td></tr>').join('') +
+        '</tbody></table></div><div id="safetyOut"></div></section>';
+      const mine = medLog().filter(l => l.crew === crew.id && l.day > DAY - 14).sort((a, b) => b.day - a.day);
+      html += '<section class="m-card glow-card"><h2 class="m-h2" style="margin-top:0">' + esc(crew.name) + '\'s medicine log (last 14 days)</h2>' +
+        (mine.length ? '<table class="m-table"><tr><th>Day</th><th>Medicine</th></tr>' + mine.map(l => '<tr><td>' + l.day + '</td><td>' + KIT.find(k => k.id === l.med).name + (l.live ? ' <span class="chip">logged today</span>' : '') + '</td></tr>').join('') + '</table>' : '<p class="m-small">Nothing logged.</p>') + '</section>';
+      return html + DEMO_NOTE;
+    },
+
+    /* ---------- CREW & BUDDY ---------- */
+    crew: function () {
+      const privacy = store.get('pranavyom.privacy', {}), mine = privacy[crew.id] || 'full';
+      let html = identity('Crew & Buddy', 'How the crew is doing, your privacy choice, and a private way to look out for each other.');
+      html += '<div class="m-crew">';
+      D.crewList.forEach(c => {
+        const ev = evaluate(c.id), p = privacy[c.id] || 'full', hidden = p === 'private' && ev.overall !== 'red', me = c.id === crew.id;
+        const flags = buddyFlags(c.id).length;
+        html += '<a class="m-mate' + (me ? ' is-me' : '') + '" href="astronaut.html?crew=' + c.id + '#home"><span class="m-mate__id">' + c.id + (me ? ' · you' : '') + '</span>' +
+          '<b>' + esc(c.name) + '</b><small>' + esc(c.designation) + '</small>' +
+          (hidden ? '<span class="chip">🔒 Private</span>' : '<span class="m-mate__score">' + (p === 'full' ? ev.score + ' · ' : '') + badge(ev.overall) + '</span>') +
+          (flags ? '<span class="m-small m-yellow-text">● ' + flags + ' buddy flag' + (flags > 1 ? 's' : '') + '</span>' : '') + '</a>';
+      });
+      html += '</div><div class="m-grid2">' +
+        '<section class="m-card glow-card"><h2 class="m-h2" style="margin-top:0">My privacy</h2><p class="m-small">Choose what the commander can see about ' + esc(crew.name) + '. A Red status is always shared for safety.</p>' +
+        [['full', 'Everything: score and status'], ['summary', 'Summary: status only'], ['private', 'Private: share only if something turns Red']]
+          .map(o => '<label class="m-radio"><input type="radio" name="priv" value="' + o[0] + '"' + (mine === o[0] ? ' checked' : '') + '> ' + o[1] + '</label>').join('') + '</section>' +
+        '<section class="m-card glow-card"><h2 class="m-h2" style="margin-top:0">Buddy check</h2><p class="m-small">Worried about a crewmate? Flag it privately. They get a gentle "keep an eye" on Mind & Neuro; your name is not shown.</p>' +
+        '<select class="m-select" id="buddyWho" aria-label="Crewmate">' + D.crewList.filter(c => c.id !== crew.id).map(c => '<option value="' + c.id + '">' + c.id + ' · ' + esc(c.name) + '</option>').join('') + '</select>' +
+        '<input class="journal" id="buddyNote" maxlength="140" placeholder="What did you notice? (optional)" style="margin:10px 0">' +
+        '<button class="cta" type="button" id="buddyGo">Send private flag</button></section></div>';
+      return html + DEMO_NOTE;
+    },
+
+    /* ---------- REPORTS TO EARTH ---------- */
+    reports: function () {
+      const text = report(), bytes = new Blob([text]).size, outbox = store.get('pranavyom.outbox', []).filter(o => o.crew === crew.id);
+      let html = identity('Reports to Earth', 'A short text brief for the Flight Surgeon. One-way signal delay today: about 8.5 minutes (simulated).');
+      html += '<section class="m-card glow-card"><p class="m-small">Size: <b>' + bytes + ' bytes</b>, tiny enough for a deep-space link.</p>' +
+        '<pre class="m-report" id="reportText">' + esc(text) + '</pre><div class="m-row" style="justify-content:flex-start;gap:10px">' +
+        '<button class="pill-btn" type="button" id="copyReport">Copy</button><button class="cta" type="button" id="queueReport">☁ Queue for next comms window</button></div></section>' +
+        '<section class="m-card glow-card"><h2 class="m-h2" style="margin-top:0">Outbox</h2>' + (outbox.length ? '<table class="m-table"><tr><th>Queued</th><th>Size</th></tr>' +
+          outbox.slice().reverse().map(o => '<tr><td>' + esc(o.at) + '</td><td>' + o.bytes + ' B</td></tr>').join('') + '</table>' : '<p class="m-small">Nothing queued yet.</p>') + '</section>';
+      return html + DEMO_NOTE;
+    }
+  };
+
+  /* Text report for Earth */
+  function report() {
+    const ev = evaluate(crew.id), rows = ev.rows.slice(-7);
+    const avg = k => rows.reduce((a, r) => a + r[k], 0) / rows.length;
+    const L = [];
+    L.push('PRANAVYOM ZERO-GRAM · CLINICAL BRIEF (DEMONSTRATION DATA)');
+    L.push(crew.id + ' · ' + crew.name + ' (' + crew.designation + ') · Mission day ' + DAY);
+    L.push('Health score ' + ev.score + '/100 · ' + WORD[ev.overall] + (ev.live ? ' · includes today\'s live check-in' : ''));
+    L.push('');
+    L.push('BODY SYSTEMS');
+    SYSTEMS.forEach(s => { const st = ev.sys[s.id]; L.push('- ' + s.name + ': ' + WORD[st.level] + (st.reasons.length ? ' — ' + st.reasons.map(r => r.detail).join('; ') : '')); });
+    L.push('');
+    L.push('7-DAY AVERAGES');
+    L.push('- Sleep ' + fmt(avg('sleep'), 1) + ' h · Resting HR ' + fmt(avg('hr'), 0) + ' bpm · Reaction ' + fmt(avg('rt'), 0) + ' ms');
+    L.push('- ARED ' + fmt(avg('ared'), 0) + '% of plan · Water ' + fmt(avg('water'), 1) + ' L · Mood ' + fmt(avg('mood'), 1) + '/5');
+    L.push('- Career radiation ' + fmt(ev.cumDose, 0) + ' / 600 mSv');
+    const meds = medLog().filter(l => l.crew === crew.id && l.day > DAY - 7);
+    L.push('- Kit medicines: ' + (meds.length ? meds.map(l => 'D' + l.day + ' ' + KIT.find(k => k.id === l.med).name).join(', ') : 'none'));
+    if (buddyFlags(crew.id).length) L.push('- Buddy-check flags: ' + buddyFlags(crew.id).length);
+    if (ev.today.journal) L.push('- Journal: "' + ev.today.journal + '"');
+    L.push('');
+    L.push('Decision support only. Kit medicines per Flight Surgeon protocols.');
+    return L.join('\n');
+  }
+
+  /* Hand-drawn SVG line chart with the personal normal band */
+  function chart(key, rows) {
+    const m = METRICS[key], b = baseFor(crew.id)[key];
+    const vals = rows.map(r => r[key]);
+    let band = null, redLine = null, target = m.yellowBelow !== undefined ? m.yellowBelow : m.yellowAtLeast !== undefined ? m.yellowAtLeast : m.yellowAbove;
+    if (m.kind === 'z') { band = [b[0] - 1.5 * b[1], b[0] + 1.5 * b[1]]; redLine = m.bad === 'high' ? b[0] + 2.5 * b[1] : b[0] - 2.5 * b[1]; }
+    const all = vals.concat(band || [], redLine !== null ? [redLine] : [], target !== undefined ? [target] : []);
+    let lo = Math.min.apply(null, all), hi = Math.max.apply(null, all); const pad = (hi - lo) * .1 || 1; lo -= pad; hi += pad;
+    const W = 860, H = 300, L = 56, R = 18, T = 16, B = 34;
+    const X = i => L + i / (rows.length - 1) * (W - L - R), Y = v => T + (1 - (v - lo) / (hi - lo)) * (H - T - B);
+    let s = '<div class="m-chart"><svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + m.label + ' over 30 days">';
+    for (let i = 0; i <= 4; i++) { const v = lo + (hi - lo) * i / 4; s += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + Y(v) + '" y2="' + Y(v) + '" class="g"/><text x="' + (L - 8) + '" y="' + (Y(v) + 4) + '" text-anchor="end">' + fmt(v, m.dp) + '</text>'; }
+    rows.forEach((r, i) => { if (i % 5 === 0 || i === rows.length - 1) s += '<text x="' + X(i) + '" y="' + (H - 10) + '" text-anchor="middle">D' + r.day + '</text>'; });
+    if (band) s += '<rect x="' + L + '" width="' + (W - L - R) + '" y="' + Y(band[1]) + '" height="' + (Y(band[0]) - Y(band[1])) + '" class="band"/>';
+    if (redLine !== null) s += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + Y(redLine) + '" y2="' + Y(redLine) + '" class="red"/>';
+    if (target !== undefined) s += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + Y(target) + '" y2="' + Y(target) + '" class="target"/>';
+    s += '<polyline points="' + vals.map((v, i) => X(i) + ',' + Y(v)).join(' ') + '" class="line"/>';
+    rows.forEach((r, i) => {
+      const lv = metricStatus(crew.id, rows, key, i).level;
+      s += '<circle cx="' + X(i) + '" cy="' + Y(r[key]) + '" r="' + (i === rows.length - 1 ? 6 : 3.5) + '" class="pt pt--' + lv + '"><title>Day ' + r.day + ': ' + fmt(r[key], m.dp) + ' ' + m.unit + ' · ' + WORD[lv] + '</title></circle>';
+    });
+    s += '</svg><div class="m-legend"><span><i class="l-line"></i>Daily value</span>' + (band ? '<span><i class="l-band"></i>Normal range (±1.5σ)</span><span><i class="l-red"></i>Red line (2.5σ)</span>' : '') +
+      (target !== undefined ? '<span><i class="l-target"></i>Target / watch line</span>' : '') + '<span>● Today = big dot · hover a dot for its value</span></div>';
+    const today = metricStatus(crew.id, rows, key);
+    s += '<p class="m-small">Today: <b>' + fmt(today.value, m.dp) + ' ' + m.unit + '</b> ' + badge(today.level) + (band ? ' · Normal for ' + esc(crew.name) + ': ' + fmt(b[0], m.dp) + ' ± ' + fmt(b[1], m.dp) + ' ' + m.unit : '') + '</p></div>';
+    return s;
+  }
+
+  /* ==========================================================
+     6. NAVIGATION between screens (uses #home, #action …)
+     ========================================================== */
+  const NAMES = ['home', 'checkin', 'action', 'trends', 'pharmacy', 'crew', 'reports'];
+  function show(name) {
+    if (!NAMES.includes(name)) name = 'checkin';
+    document.querySelectorAll('.side__item[data-view]').forEach(b => {
+      const on = b.dataset.view === name;
+      b.classList.toggle('is-active', on);
+      if (on) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');
+    });
+    if (name === 'checkin') { checkinView.hidden = false; view.hidden = true; }
+    else {
+      checkinView.hidden = true; view.hidden = false;
+      view.innerHTML = SCREENS[name]();
+      wire(name);
+    }
+    window.scrollTo(0, 0);
+  }
+  function go(name) { if (location.hash === '#' + name) show(name); else location.hash = name; }
+  document.querySelectorAll('.side__item[data-view]').forEach(b => b.addEventListener('click', () => go(b.dataset.view)));
+  window.addEventListener('hashchange', () => show(location.hash.slice(1)));
+
+  /* Buttons inside the screens */
+  function wire(name) {
+    view.querySelectorAll('[data-go]').forEach(b => b.addEventListener('click', () => go(b.dataset.go)));
+    if (name === 'trends') document.getElementById('trendSel').addEventListener('change', e => { SCREENS.trendKey = e.target.value; show('trends'); });
+    view.querySelectorAll('[data-take]').forEach(b => b.addEventListener('click', () => {
+      const log = store.get('pranavyom.medlog', []); log.push({ day: DAY, crew: crew.id, med: b.dataset.take, live: true });
+      store.set('pranavyom.medlog', log); toast('Logged. Pharmacy stock updated.'); show(name);
+    }));
+    view.querySelectorAll('[data-check]').forEach(b => b.addEventListener('click', () => {
+      const k = KIT.find(x => x.id === b.dataset.check), chk = safety(k.id);
+      document.getElementById('safetyOut').innerHTML = '<div class="m-safebox m-safebox--' + (chk.blocked ? 'red' : chk.notes.length ? 'yellow' : 'green') + '"><b>' + k.name + ' for ' + esc(crew.name) + ':</b> ' +
+        (chk.blocked ? 'Do not use.' : chk.notes.length ? 'Use with caution.' : 'No allergies or interactions found.') +
+        (chk.notes.length ? '<ul>' + chk.notes.map(n => '<li>' + esc(n) + '</li>').join('') + '</ul>' : '') + '<small>Dose as printed on protocol card ' + k.card + '. Decision support only.</small></div>';
+    }));
+    view.querySelectorAll('input[name=priv]').forEach(r => r.addEventListener('change', () => {
+      const p = store.get('pranavyom.privacy', {}); p[crew.id] = r.value; store.set('pranavyom.privacy', p); toast('Privacy saved'); show('crew');
+    }));
+    const bg = document.getElementById('buddyGo');
+    if (bg) bg.addEventListener('click', () => {
+      const flags = store.get('pranavyom.buddy', []);
+      flags.push({ day: DAY, about: document.getElementById('buddyWho').value, note: document.getElementById('buddyNote').value.trim() });
+      store.set('pranavyom.buddy', flags); toast('Flag sent privately'); show('crew');
+    });
+    const cp = document.getElementById('copyReport');
+    if (cp) cp.addEventListener('click', () => {
+      const text = document.getElementById('reportText').textContent;
+      const fallback = () => { const r = document.createRange(); r.selectNodeContents(document.getElementById('reportText')); const s = getSelection(); s.removeAllRanges(); s.addRange(r); toast('Selected: press Ctrl+C'); };
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(() => toast('Copied'), fallback); else fallback();
+    });
+    const qr = document.getElementById('queueReport');
+    if (qr) qr.addEventListener('click', () => {
+      const o = store.get('pranavyom.outbox', []); o.push({ crew: crew.id, at: new Date().toLocaleString(), bytes: new Blob([report()]).size });
+      store.set('pranavyom.outbox', o); toast('Queued for the next comms window'); show('reports');
+    });
+  }
+
+  show(location.hash.slice(1) || 'checkin');
+})();
