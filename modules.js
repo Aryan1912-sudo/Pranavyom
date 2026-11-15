@@ -1,68 +1,40 @@
 /* ==========================================================
    PRANAVYOM ZERO-GRAM — sidebar modules loader
-   1. Makes sure the crew details are available (even if
-      astronaut.js is an older version)
-   2. Loads modules-1.js, modules-2.js, modules-3.js in order
-   3. Shows any problem in a yellow box on the page itself
-   4. Extra views: health-score graph, Earth-return readiness table
+   1. Loads modules-1.js, modules-2.js, modules-3.js in order
+   2. Shows any problem in a yellow box on the page itself
+   3. Extra views: health-score graph, Earth-return readiness table,
+      today's reminders table, end-of-day buzzer and tap sounds
       (these run later, once modules-1/2/3 have loaded)
    ========================================================== */
 (function () {
-  'use strict';
-
-  /* Show problems on screen, so no Console is needed */
-  function problem(msg) {
-    let box = document.getElementById('pzProblem');
-    if (!box) {
-      box = document.createElement('div');
-      box.id = 'pzProblem';
-      box.style.cssText = 'position:fixed;left:16px;right:16px;bottom:16px;z-index:9999;background:#151515;color:#fff;' +
-        'border:2px solid #F5C518;border-radius:12px;padding:14px 16px;font:14px/1.5 Inter,Arial,sans-serif';
-      document.body.appendChild(box);
-    }
-    box.innerHTML += '<div>⚠ ' + String(msg).replace(/</g, '&lt;') + '</div>';
-  }
-  window.addEventListener('error', function (e) {
-    problem((e.filename ? e.filename.split('/').pop() + ' line ' + e.lineno + ': ' : '') + e.message);
-  });
-
-  /* Backup crew details if astronaut.js did not share them */
-  if (!window.PZDeck) {
-    const NAMES = ['Arjun Mehta', 'Elena Vasquez', 'Priya Nair', 'Dr. Kwame Mensah', 'Sofia Lindqvist', 'Hiroshi Tanaka', 'Amara Okafor', 'Lucas Moreau',
-      'Zara Haddad', 'Daniel Kim', 'Inês Carvalho', 'Rohan Iyer', 'Dr. Grace Whitfield', 'Mateo Rossi', 'Naledi Dlamini', 'Samuel Brooks'];
-    const ROLES = ['Mission Commander', 'Spacecraft Pilot', 'Flight Engineer', 'Medical Officer', 'Mission Scientist', 'Research Specialist', 'Life Support Engineer',
-      'Robotics Specialist', 'Navigation Officer', 'Communications Specialist', 'Biologist', 'Systems Engineer', 'Space Medicine Researcher', 'Geologist',
-      'Environmental Systems Specialist', 'Mission Operations Specialist'];
-    const list = NAMES.map(function (n, i) { return { id: 'CREW-' + String(i + 1).padStart(2, '0'), name: n, designation: ROLES[i] }; });
-    const wanted = new URLSearchParams(location.search).get('crew') || sessionStorage.getItem('pranavyom.selectedCrewId') || 'CREW-01';
-    const crew = list.find(function (c) { return c.id === wanted; }) || list[0];
-    window.PZDeck = {
-      crew: crew, crewList: list, missionDay: 34,
-      esc: function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); },
-      toast: function (msg) {
-        const t = document.getElementById('toast'); if (!t) return;
-        t.textContent = msg; t.hidden = false; clearTimeout(t._timer); t._timer = setTimeout(function () { t.hidden = true; }, 2400);
-      }
-    };
-  }
-
-  /* Load the three parts in order (?v= stops the browser using an old copy) */
-  const v = Date.now();
-  ['modules-1.js', 'modules-2.js', 'modules-3.js'].reduce(function (ready, src) {
-    return ready.then(function () {
-      return new Promise(function (done, fail) {
-        const s = document.createElement('script');
-        s.src = src + '?v=' + v;
-        s.onload = done;
-        s.onerror = function () { problem('Could not find ' + src + '. It must be in the same folder as astronaut.html, named exactly ' + src); fail(); };
-        document.body.appendChild(s);
-      });
-    });
-  }, Promise.resolve()).then(function () { addExtras(); }).catch(function () { /* already shown on screen */ });
+'use strict';
+function problem(msg) {
+let box = document.getElementById('pzProblem');
+if (!box) {
+box = document.createElement('div');
+box.id = 'pzProblem';
+box.style.cssText = 'position:fixed;left:16px;right:16px;bottom:16px;z-index:9999;background:#151515;color:#fff;' +
+'border:2px solid #F5C518;border-radius:12px;padding:14px 16px;font:14px/1.5 Inter,Arial,sans-serif';
+document.body.appendChild(box);
+}
+box.innerHTML += '<div>⚠ ' + String(msg).replace(/</g, '&lt;') + '</div>';
+}
+window.addEventListener('error', function (e) {
+problem((e.filename ? e.filename.split('/').pop() + ' line ' + e.lineno + ': ' : '') + e.message);
+});
+const v = Date.now();
+['modules-1.js', 'modules-2.js', 'modules-3.js'].reduce(function (ready, src) {
+return ready.then(function () {
+return new Promise(function (done, fail) {
+const s = document.createElement('script');
+s.src = src + '?v=' + v;
+s.onload = done;
+s.onerror = function () { problem('Could not find ' + src + '. It must be in the same folder as astronaut.html, named exactly ' + src); fail(); };
+document.body.appendChild(s);
+});
+});
+}, Promise.resolve()).then(function () { addExtras(); }).catch(function () { /* already shown on screen */ });
 })();
-
-/* ---------- EXTRA VIEWS (used by Health Trends and Reports to Earth) ---------- */
-/* Health score for each of the last 30 days (re-runs the evaluation day by day) */
 function scoreHistory(id) {
 const full = series, out = [];
 try {
@@ -91,7 +63,6 @@ return s + '</svg><div class="m-legend"><span><i class="l-band"></i>80–100 All
 '<tr><td>First week of this 30-day window</td><td>' + early + '</td><td class="m-' + (thisWk >= early ? 'green' : 'red') + '-text">' + (thisWk - early >= 0 ? '▲ +' : '▼ ') + (thisWk - early) + '</td></tr></table>' +
 '<p class="m-small">Day ' + pts[0].day + ': <b>' + first + '</b> → today: <b>' + last + '</b> (' + (diff >= 0 ? '+' : '') + diff + ' points over 30 days)</p></div>';
 }
-/* Earth-return readiness: how ready each astronaut's body is for gravity again */
 function readiness(id) {
 const rows = series(id), last7 = rows.slice(-7), b = baseFor(id), t = rows[rows.length - 1], ev = evaluate(id);
 const avg = k => last7.reduce((a, r) => a + r[k], 0) / last7.length;
@@ -112,15 +83,110 @@ D.crewList.map(c => { const r = readiness(c.id); return '<tr' + (c.id === crew.i
 cell(r.bone) + cell(r.muscle) + cell(r.heart) + cell(r.eyes) + cell(r.rad) + '<td><b>' + r.total + '%</b></td><td>' + badge(r.status[0]).replace(WORD[r.status[0]], r.status[1]) + '</td></tr>'; }).join('') +
 '</tbody></table></div><p class="m-small">Bones = ARED workouts (7-day average) · Muscle = grip steadiness · Heart = resting heart rate and oxygen (fainting risk when standing in gravity) · Eyes = SANS checks · Radiation = career dose left. Fictional demo values.</p>';
 }
-
-/* Add the extra sections to Health Trends and Reports to Earth, then redraw */
 function addExtras() {
-  const trends = SCREENS.trends, reports = SCREENS.reports;
-  SCREENS.trends = function () {
-    return trends().replace(DEMO_NOTE, '<section class="m-card glow-card"><h2 class="m-h2" style="margin:0 0 6px">Overall health score <small>(0–100 · all 7 body systems, compared with past weeks)</small></h2>' + healthChart(crew.id) + '</section>' + DEMO_NOTE);
-  };
-  SCREENS.reports = function () {
-    return reports().replace(DEMO_NOTE, '<section class="m-card glow-card"><h2 class="m-h2" style="margin-top:0">Earth-return readiness <small>(how ready each body is for gravity again)</small></h2>' + readinessTable() + '</section>' + DEMO_NOTE);
-  };
-  show(location.hash.slice(1) || 'checkin');
+const trends = SCREENS.trends, reports = SCREENS.reports;
+SCREENS.trends = function () {
+return trends().replace(DEMO_NOTE, '<section class="m-card glow-card"><h2 class="m-h2" style="margin:0 0 6px">Overall health score <small>(0–100 · all 7 body systems, compared with past weeks)</small></h2>' + healthChart(crew.id) + '</section>' + DEMO_NOTE);
+};
+const home = SCREENS.home;
+SCREENS.home = function () { return home().replace(DEMO_NOTE, reminderTable() + DEMO_NOTE); };
+const wired = wire;
+wire = function (name) { wired(name); if (name === 'home') wireReminders(); };
+SCREENS.reports = function () {
+return reports().replace(DEMO_NOTE, '<section class="m-card glow-card"><h2 class="m-h2" style="margin-top:0">Earth-return readiness <small>(how ready each body is for gravity again)</small></h2>' + readinessTable() + '</section>' + DEMO_NOTE);
+};
+show(location.hash.slice(1) || 'checkin');
 }
+const PZSound = (function () {
+let ctx = null, muted = false;
+try { muted = localStorage.getItem('pranavyom.muted') === '1'; } catch (e) { /* ignore */ }
+function ac() { if (!ctx) { const A = window.AudioContext || window.webkitAudioContext; if (A) ctx = new A(); } if (ctx && ctx.state === 'suspended') ctx.resume(); return ctx; }
+let alarmBus = null;
+function tone(freq, start, len, type, vol, alarm) {
+const c = ac(); if (!c || muted) return;
+if (alarm && !alarmBus) { alarmBus = c.createGain(); alarmBus.connect(c.destination); }
+const o = c.createOscillator(), g = c.createGain(), t = c.currentTime + start;
+o.type = type; o.frequency.value = freq;
+g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t + len);
+o.connect(g); g.connect(alarm ? alarmBus : c.destination); o.start(t); o.stop(t + len + 0.02);
+}
+return {
+tap: function () { tone(1250, 0, 0.05, 'sine', 0.05); },
+ok: function () { tone(880, 0, 0.09, 'sine', 0.08); tone(1320, 0.09, 0.14, 'sine', 0.08); },
+buzzer: function () { for (let i = 0; i < 3; i++) { tone(620, i * 0.42, 0.18, 'triangle', 0.12, true); tone(830, i * 0.42 + 0.2, 0.18, 'triangle', 0.12, true); } },
+silence: function () { if (alarmBus && ctx) { alarmBus.gain.setTargetAtTime(0, ctx.currentTime, 0.02); const old = alarmBus; setTimeout(function () { old.disconnect(); }, 200); alarmBus = null; } },
+isMuted: function () { return muted; },
+toggle: function () { muted = !muted; try { localStorage.setItem('pranavyom.muted', muted ? '1' : '0'); } catch (e) { /* ignore */ } if (!muted) this.ok(); return muted; }
+};
+})();
+document.addEventListener('pointerdown', function (e) {
+if (e.target.closest('button, a, input, select, label, [role="button"], [role="radio"]')) PZSound.tap();
+}, true);
+document.addEventListener('deck:submitted', function () { PZSound.ok(); });
+(function () {
+const b = document.createElement('button');
+b.type = 'button'; b.id = 'pzMute';
+b.style.cssText = 'position:fixed;right:16px;bottom:16px;z-index:9000;width:42px;height:42px;border-radius:50%;border:1px solid #F5C518;background:#151515;color:#F5C518;font-size:18px;cursor:pointer';
+const label = function () { b.textContent = PZSound.isMuted() ? '🔇' : '🔊'; b.title = PZSound.isMuted() ? 'Sounds off: tap to turn on' : 'Sounds on: tap to mute'; b.setAttribute('aria-label', b.title); };
+b.addEventListener('click', function () { PZSound.toggle(); label(); });
+label(); document.body.appendChild(b);
+})();
+const REMIND_KEY = 'pranavyom.remindAt';
+function remindTime() { try { return localStorage.getItem(REMIND_KEY) || '21:00'; } catch (e) { return '21:00'; } }
+function todayRecord() { const r = latestRecord(crew.id); return r && new Date(r.recordedAt).toDateString() === new Date().toDateString() ? r : null; }
+function dayTasks(id) {
+if (id === crew.id) { const r = todayRecord(), t = r ? r.results : {}; return { checkin: !!r, water: !!t.test5, ared: !!t.test4, time: r ? new Date(r.recordedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '' }; }
+const n = parseInt(id.slice(5), 10), seed = (n * 7 + new Date().getDate() * 3) % 10;
+return { checkin: seed > 2, water: seed > 1, ared: seed % 4 !== 0, time: seed > 2 ? (7 + seed) + ':' + (seed * 6 % 60 < 10 ? '0' : '') + (seed * 6 % 60) : '' };
+}
+function reminderTable() {
+const tick = v => v ? '<td class="m-green-text">✓ Done</td>' : '<td class="m-red-text">✗ Missing</td>';
+let missing = 0;
+const rows = D.crewList.map(c => {
+const d = dayTasks(c.id), all = d.checkin && d.water && d.ared; if (!all) missing++;
+return '<tr' + (c.id === crew.id ? ' style="background:rgba(245,197,24,.08)"' : '') + '><td><b>' + esc(c.name) + '</b><br><small>' + c.id + (c.id === crew.id ? ' · you' : '') + '</small></td>' +
+tick(d.checkin) + tick(d.water) + tick(d.ared) + '<td>' + (d.time || '—') + '</td><td>' + (all ? badge('green').replace('All good', 'Complete') : badge('red').replace('Act now', 'Buzzer at ' + remindTime())) + '</td></tr>';
+}).join('');
+return '<section class="m-card glow-card"><div class="m-row"><h2 class="m-h2" style="margin:0">Today\'s reminders <small>(' + missing + ' of 16 still have tasks left)</small></h2>' +
+'<span style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><label class="m-small" for="remindAt">End-of-day buzzer</label><input type="time" id="remindAt" class="m-select" value="' + remindTime() + '">' +
+'<button class="pill-btn" type="button" id="testBuzzer">🔔 Test buzzer</button></span></div>' +
+'<div class="m-table-wrap"><table class="m-table"><thead><tr><th>Astronaut</th><th>Daily check-in</th><th>Water log</th><th>ARED workout</th><th>Done at</th><th>Status</th></tr></thead><tbody>' + rows + '</tbody></table></div>' +
+'<p class="m-small">If your tasks are not done by the buzzer time, an alarm sounds for up to a minute with a banner: do it now, snooze 10 minutes, or dismiss (Esc also works). Other crew members\' rows are fictional demo data.</p></section>';
+}
+function wireReminders() {
+const t = document.getElementById('remindAt'), b = document.getElementById('testBuzzer');
+if (t) t.addEventListener('change', function () { try { localStorage.setItem(REMIND_KEY, t.value); } catch (e) { /* ignore */ } buzzedToday = false; toast('Buzzer set for ' + t.value); show('home'); });
+if (b) b.addEventListener('click', function () { buzz(true); });
+}
+let buzzedToday = false, snoozeUntil = 0, buzzLoop = null, buzzAuto = null;
+function stopBuzz() {
+clearInterval(buzzLoop); clearTimeout(buzzAuto); buzzLoop = null; PZSound.silence();
+const bar = document.getElementById('pzBuzzer');
+if (bar) { bar.style.opacity = '0'; bar.style.transform = 'translate(-50%, -16px)'; setTimeout(function () { bar.remove(); }, 250); }
+}
+function buzz(test) {
+stopBuzz();
+const bar = document.createElement('div'); bar.id = 'pzBuzzer'; bar.setAttribute('role', 'alertdialog'); bar.setAttribute('aria-label', 'Reminder');
+bar.style.cssText = 'position:fixed;left:50%;top:18px;transform:translate(-50%,-16px);opacity:0;transition:opacity .25s ease,transform .25s ease;z-index:9500;max-width:92vw;background:#151515;color:#fff;border:2px solid #e5484d;border-radius:14px;padding:14px 18px;box-shadow:0 0 30px rgba(229,72,77,.6);display:flex;gap:12px;align-items:center;flex-wrap:wrap;font:15px/1.4 Inter,Arial,sans-serif';
+bar.innerHTML = '<b style="color:#ff7b7b">🔔 ' + (test ? 'Buzzer test' : 'End-of-day reminder') + '</b><span>' + esc(crew.name) + ', today\'s check-in is not complete yet.</span>' +
+'<button class="cta" type="button" data-bz="go">Do it now</button><button class="pill-btn" type="button" data-bz="snooze">Snooze 10 min</button><button class="ghost-btn" type="button" data-bz="off">✕ Dismiss</button>';
+document.body.appendChild(bar);
+requestAnimationFrame(function () { bar.style.opacity = '1'; bar.style.transform = 'translate(-50%, 0)'; });
+bar.addEventListener('click', function (e) {
+const btn = e.target.closest('[data-bz]'); if (!btn) return;
+const what = btn.dataset.bz; stopBuzz();
+if (what === 'go') go('checkin');
+if (what === 'snooze') { snoozeUntil = Date.now() + 10 * 60 * 1000; buzzedToday = false; toast('Snoozed for 10 minutes'); }
+});
+bar.querySelector('[data-bz="off"]').focus();
+PZSound.buzzer();
+buzzLoop = setInterval(PZSound.buzzer, 2600);
+buzzAuto = setTimeout(stopBuzz, test ? 6000 : 60000);
+}
+document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && document.getElementById('pzBuzzer')) stopBuzz(); });
+setInterval(function () {
+if (typeof latestRecord !== 'function' || typeof crew === 'undefined') return;
+const now = new Date(), hm = remindTime().split(':'), due = new Date(); due.setHours(+hm[0], +hm[1], 0, 0);
+const d = dayTasks(crew.id);
+if (!buzzedToday && now >= due && Date.now() > snoozeUntil && !(d.checkin && d.water && d.ared)) { buzzedToday = true; buzz(false); }
+}, 20000);
