@@ -24,10 +24,13 @@ box.innerHTML += '<div>⚠ ' + String(msg).replace(/</g, '&lt;') + '</div>';
 window.addEventListener('error', function (e) {
 problem((e.filename ? e.filename.split('/').pop() + ' line ' + e.lineno + ': ' : '') + e.message);
 });
-const fit = document.createElement('style');   /* sidebar: compact, scrolls if the screen is short */
-fit.textContent = '.side{overflow-y:auto;gap:12px;padding:16px 14px;scrollbar-width:thin;scrollbar-color:#F5C518 transparent}' +
+const fit = document.createElement('style');   /* sidebar: compact, always shows a yellow scroll bar */
+fit.textContent = '.side{overflow-y:scroll;overscroll-behavior:contain;gap:12px;padding:16px 10px 16px 14px;scrollbar-width:thin;scrollbar-color:#F5C518 #1a1a1a}' +
+'.side::-webkit-scrollbar{width:8px}.side::-webkit-scrollbar-track{background:#1a1a1a;border-radius:8px}' +
+'.side::-webkit-scrollbar-thumb{background:#F5C518;border-radius:8px}.side::-webkit-scrollbar-thumb:hover{background:#ffd84a}' +
 '.side__brand{padding-bottom:12px}.side__nav{gap:2px}.side__item{padding:9px 14px}' +
-'@media (max-height:780px){.side__item{padding:7px 12px;font-size:.9rem}}';
+'@media (max-height:780px){.side__item{padding:7px 12px;font-size:.9rem}}' +
+'@media (max-width:900px){.side{overflow-y:visible}}';
 document.head.appendChild(fit);
 const v = Date.now();
 ['modules-1.js', 'modules-2.js', 'modules-3.js', 'cabin.js', 'blood.js', 'sounds.js', 'vte-records.js', 'vte.js', 'access.js'].reduce(function (ready, src) {
@@ -123,23 +126,4 @@ return '<tr' + (c.id === crew.id ? ' style="background:rgba(245,197,24,.08)"' : 
 tick(d.checkin) + tick(d.water) + tick(d.ared) + '<td>' + (d.time || '—') + '</td><td>' + (all ? badge('green').replace('All good', 'Complete') : badge('red').replace('Act now', 'Buzzer at ' + remindTime())) + '</td></tr>';
 }).join('');
 return '<section class="m-card glow-card"><div class="m-row"><h2 class="m-h2" style="margin:0">Today\'s reminders <small>(' + missing + ' of 16 still have tasks left)</small></h2>' +
-'<span style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><label class="m-small" for="remindAt">End-of-day buzzer</label><input type="time" id="remindAt" class="m-select" value="' + remindTime() + '">' +
-'<button class="pill-btn" type="button" id="testBuzzer">🔔 Test buzzer</button></span></div>' +
-'<div class="m-table-wrap"><table class="m-table"><thead><tr><th>Astronaut</th><th>Daily check-in</th><th>Water log</th><th>ARED workout</th><th>Done at</th><th>Status</th></tr></thead><tbody>' + rows + '</tbody></table></div>' +
-'<p class="m-small">If your tasks are not done by the buzzer time, an alarm sounds for up to a minute: do it now, snooze 10 minutes, or dismiss (Esc also works). Other crew members\' rows are fictional demo data.</p></section>';
-}
-function reminderAlarm(test) {
-alarm(test ? 'Buzzer test' : 'End-of-day reminder', crew.name + ', today\'s check-in is not complete yet.', 'checkin', test ? 6 : 60,
-function () { snoozeUntil = Date.now() + 10 * 60 * 1000; buzzedToday = false; toast('Snoozed for 10 minutes'); });
-}
-function wireReminders() {
-const t = document.getElementById('remindAt'), b = document.getElementById('testBuzzer');
-if (t) t.addEventListener('change', function () { try { localStorage.setItem(REMIND_KEY, t.value); } catch (e) { /* ignore */ } buzzedToday = false; toast('Buzzer set for ' + t.value); show('home'); });
-if (b) b.addEventListener('click', function () { reminderAlarm(true); });
-}
-setInterval(function () {
-if (typeof alarm !== 'function' || typeof crew === 'undefined') return;
-const now = new Date(), hm = remindTime().split(':'), due = new Date(); due.setHours(+hm[0], +hm[1], 0, 0);
-const d = dayTasks(crew.id);
-if (!buzzedToday && now >= due && Date.now() > snoozeUntil && !(d.checkin && d.water && d.ared)) { buzzedToday = true; reminderAlarm(false); }
-}, 20000);
+'<span style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><label class="m-small" for="remindAt">End-of-day
