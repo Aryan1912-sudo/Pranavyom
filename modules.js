@@ -1,7 +1,8 @@
 /* ==========================================================
    PRANAVYOM ZERO-GRAM — sidebar modules loader
-   1. Loads modules-1/2/3.js, cabin.js, blood.js, sounds.js, vte.js, vte-records.js, access.js
-   2. Shows any problem in a yellow box on the page itself
+   1. Loads modules-1/2/3.js, cabin.js, blood.js, sounds.js, vte-records.js, vte.js, access.js
+      (vte-records.js before vte.js, so the VTE screen never opens half-loaded)
+   2. Shows any problem in a yellow box on the page itself; makes the sidebar fit any screen
    3. Extra views: health-score graph and Earth-return readiness table
    4. Today's reminders table and the end-of-day buzzer check
    (cabin.js: buzzer + Cabin Sensors · blood.js: Blood Tests · sounds.js: test sounds
@@ -23,8 +24,13 @@ box.innerHTML += '<div>⚠ ' + String(msg).replace(/</g, '&lt;') + '</div>';
 window.addEventListener('error', function (e) {
 problem((e.filename ? e.filename.split('/').pop() + ' line ' + e.lineno + ': ' : '') + e.message);
 });
+const fit = document.createElement('style');   /* sidebar: compact, scrolls if the screen is short */
+fit.textContent = '.side{overflow-y:auto;gap:12px;padding:16px 14px;scrollbar-width:thin;scrollbar-color:#F5C518 transparent}' +
+'.side__brand{padding-bottom:12px}.side__nav{gap:2px}.side__item{padding:9px 14px}' +
+'@media (max-height:780px){.side__item{padding:7px 12px;font-size:.9rem}}';
+document.head.appendChild(fit);
 const v = Date.now();
-['modules-1.js', 'modules-2.js', 'modules-3.js', 'cabin.js', 'blood.js', 'sounds.js', 'vte.js', 'vte-records.js', 'access.js'].reduce(function (ready, src) {
+['modules-1.js', 'modules-2.js', 'modules-3.js', 'cabin.js', 'blood.js', 'sounds.js', 'vte-records.js', 'vte.js', 'access.js'].reduce(function (ready, src) {
 return ready.then(function () {
 return new Promise(function (done, fail) {
 const s = document.createElement('script');
