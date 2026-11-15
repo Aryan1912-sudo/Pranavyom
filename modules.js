@@ -6,7 +6,7 @@
    3. Extra views: health-score graph and Earth-return readiness table
    4. Today's reminders table and the end-of-day buzzer check
    (cabin.js: buzzer + Cabin Sensors · blood.js: Blood Tests · sounds.js: test sounds
-    · vte.js + vte-records.js: VTE Monitor · access.js: who can see whose data)
+    · vte.js + vte-records.js: VTE Monitor · access.js: who can see whose data · wearable.js: Wearable Monitoring)
    ========================================================== */
 (function () {
 'use strict';
@@ -30,7 +30,7 @@ fit.textContent = '.side{overflow-y:auto;gap:12px;padding:16px 14px;scrollbar-wi
 '@media (max-height:780px){.side__item{padding:7px 12px;font-size:.9rem}}';
 document.head.appendChild(fit);
 const v = Date.now();
-['modules-1.js', 'modules-2.js', 'modules-3.js', 'cabin.js', 'blood.js', 'sounds.js', 'vte-records.js', 'vte.js', 'access.js'].reduce(function (ready, src) {
+['modules-1.js', 'modules-2.js', 'modules-3.js', 'cabin.js', 'blood.js', 'sounds.js', 'vte-records.js', 'vte.js', 'access.js', 'wearable.js'].reduce(function (ready, src) {
 return ready.then(function () {
 return new Promise(function (done, fail) {
 const s = document.createElement('script');
