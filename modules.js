@@ -1,10 +1,10 @@
 /* ==========================================================
    PRANAVYOM ZERO-GRAM — sidebar modules loader
-   1. Loads modules-1.js, modules-2.js, modules-3.js and cabin.js in order
+   1. Loads modules-1.js, modules-2.js, modules-3.js, cabin.js, blood.js and sounds.js
    2. Shows any problem in a yellow box on the page itself
    3. Extra views: health-score graph and Earth-return readiness table
    4. Today's reminders table and the end-of-day buzzer check
-   (cabin.js adds sounds, the buzzer and the Cabin Sensors screen)
+   (cabin.js: buzzer + Cabin Sensors · blood.js: Blood Tests · sounds.js: test sounds)
    ========================================================== */
 (function () {
 'use strict';
@@ -23,7 +23,7 @@ window.addEventListener('error', function (e) {
 problem((e.filename ? e.filename.split('/').pop() + ' line ' + e.lineno + ': ' : '') + e.message);
 });
 const v = Date.now();
-['modules-1.js', 'modules-2.js', 'modules-3.js', 'cabin.js'].reduce(function (ready, src) {
+['modules-1.js', 'modules-2.js', 'modules-3.js', 'cabin.js', 'blood.js', 'sounds.js'].reduce(function (ready, src) {
 return ready.then(function () {
 return new Promise(function (done, fail) {
 const s = document.createElement('script');
