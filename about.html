@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About · How PRANAVYOM ZERO-GRAM works</title>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--p:#151515;--l:#262626;--y:#F5C518;--g:#A1A1A1}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#090909;color:#fff;font:16px/1.6 Inter,Arial,sans-serif}
+a{color:var(--y)}
+.w{max-width:1000px;margin:0 auto;padding:28px 22px 60px}
+.top{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:30px}
+.brand{font-weight:700;letter-spacing:.2em;text-decoration:none;color:#fff}
+.brand span{color:var(--y)}
+.btn{display:inline-block;padding:9px 16px;border:1px solid var(--y);border-radius:99px;color:var(--y);text-decoration:none;font-weight:600;font-size:.8rem;text-transform:uppercase}
+.btn.s{background:var(--y);color:#111}
+h1{font:400 clamp(2.4rem,6vw,4rem)/1.05 Anton,Impact,sans-serif}
+h1 em{font-style:normal;color:var(--y)}
+.lead{color:var(--g);font-size:1.1rem;margin:12px 0 24px}
+section{background:var(--p);border:1px solid rgba(245,197,24,.35);border-radius:18px;padding:22px 24px;margin-bottom:18px}
+h2{font-size:1.3rem;margin-bottom:8px}
+h2 small{color:var(--y);font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;display:block}
+h3{font-size:1rem;color:var(--y);margin:14px 0 4px}
+p+p,p+ul,ul+p{margin-top:8px}
+ul{padding-left:20px}
+li{margin:3px 0}
+code,.f{font-family:Consolas,monospace;background:#0b0b0b;border:1px solid var(--l);border-radius:6px;padding:1px 6px;font-size:.88rem}
+.f{display:block;padding:9px 12px;margin:8px 0;white-space:pre-wrap}
+table{width:100%;border-collapse:collapse;margin-top:8px;font-size:.92rem}
+th,td{text-align:left;padding:7px 9px;border-bottom:1px solid var(--l);vertical-align:top}
+th{color:var(--g);font-size:.72rem;text-transform:uppercase}
+.g{color:#7fd67f;font-weight:700}.y{color:var(--y);font-weight:700}.r{color:#ff7b7b;font-weight:700}
+.n{border-left:4px solid var(--y);padding:9px 13px;background:#0f0f0f;border-radius:8px;color:var(--g);margin-top:10px}
+.sc{overflow-x:auto}
+footer{color:var(--g);font-size:.85rem;text-align:center;margin-top:26px}
+</style>
+</head>
+<body>
+<div class="w">
+<div class="top">
+<a class="brand" href="index.html">PRANAVYOM <span>ZERO-GRAM</span></a>
+<span><a class="btn" href="index.html">← Welcome</a> <a class="btn s" href="crew.html">Enter mission →</a></span>
+</div>
+<h1>How <em>ZERO-GRAM</em> works</h1>
+<p class="lead">A daily health companion for astronauts on a 450-day Mars mission, when Earth is up to 22 minutes away by radio. Here is every rule behind the numbers and colours.</p>
+
+<section>
+<h2><small>01 · The idea</small>Screen-based checks, no extra hardware</h2>
+<p>A Mars crew cannot wait for a doctor on Earth. ZERO-GRAM turns a tablet into a 3–4 minute daily check-in covering the systems spaceflight harms most: <b>brain speed, eyes (SANS), memory, muscle and bone, hydration, and mood and sleep</b>. Every result is compared with <b>that astronaut's own normal</b>, then explained in plain words.</p>
+</section>
+
+<section>
+<h2><small>02 · The daily check-in</small>Six tests</h2>
+<div class="sc"><table>
+<tr><th>Test</th><th>What the astronaut does</th><th>What we calculate</th></tr>
+<tr><td><b>01 Reaction tap</b></td><td>Taps a random target for 20 s</td><td>Median reaction (ms), tap offset (mm), misses</td></tr>
+<tr><td><b>02 Amsler &amp; contrast</b></td><td>Marks wavy squares; reads the faintest letter row</td><td>Distorted areas; lowest readable contrast (early SANS signs)</td></tr>
+<tr><td><b>03 Spatial memory</b></td><td>Repeats lit-tile sequences of 3 to 7</td><td>Memory span and errors (drop with sleep debt or high CO₂)</td></tr>
+<tr><td><b>04 Grip hold &amp; ARED</b></td><td>Holds a finger still 15 s; logs workout</td><td>Hold drift (px, RMS); ARED % of plan</td></tr>
+<tr><td><b>05 Hydration</b></td><td>Logs water, urine colour 1–5, supplements</td><td>Litres vs 2.5 L; kidney-stone risk</td></tr>
+<tr><td><b>06 Mood &amp; symptoms</b></td><td>Three sliders, symptom chips, journal</td><td>Mood, stress, energy, symptoms</td></tr>
+</table></div>
+<p>Heart rate, SpO₂, sleep, cabin air and radiation come from wearables and cabin sensors; in this prototype they are <b>simulated</b>.</p>
+</section>
+
+<section>
+<h2><small>03 · Personal normal &amp; traffic lights</small>Comparing each astronaut with themselves</h2>
+<p>Each astronaut has a pre-flight <b>baseline</b>: usual value (μ) and normal spread (σ). Today's value becomes a <b>Z-score</b>; only the unhealthy direction counts.</p>
+<span class="f">Z = (today's value − personal mean) ÷ personal spread</span>
+<p><span class="g">● All good</span> below 1.5σ · <span class="y">● Keep an eye</span> 1.5σ–2.5σ · <span class="r">● Act now</span> 2.5σ or more. Every status also has a word, never colour alone.</p>
+</section>
+
+<section>
+<h2><small>04 · The rule table</small>Fixed limits on top of Z-scores</h2>
+<div class="sc"><table>
+<tr><th>Measure</th><th>System</th><th>Rule</th></tr>
+<tr><td>Heart rate · SpO₂</td><td>Heart</td><td>Z-score; SpO₂ also <span class="y">eye</span> &lt;94%, <span class="r">act</span> &lt;92%</td></tr>
+<tr><td>Reaction · memory · mood · stress</td><td>Mind</td><td>Z-score</td></tr>
+<tr><td>Amsler marks · contrast</td><td>Eyes (SANS)</td><td><span class="y">eye</span> 1–3 marks or contrast ≥50% only · <span class="r">act</span> 4+ marks</td></tr>
+<tr><td>Sleep · energy</td><td>Sleep</td><td>Z-score, low is bad</td></tr>
+<tr><td>Grip drift · ARED · water · urine</td><td>Bones &amp; muscle</td><td>Z-score; <span class="y">eye</span> ARED &lt;80%, water &lt;2 L, urine 4–5</td></tr>
+<tr><td>Daily radiation dose</td><td>Radiation</td><td><span class="y">eye</span> &gt;3 mSv/day · <span class="r">act</span> &gt;10 mSv/day · career limit 600 mSv</td></tr>
+<tr><td>Symptoms · buddy flag</td><td>Matching system</td><td>Adds a <span class="y">Keep an eye</span></td></tr>
+</table></div>
+<p>A body system takes the <b>worst</b> level of its measures.</p>
+</section>
+
+<section>
+<h2><small>05 · Mission health score</small>One number from 0 to 100</h2>
+<ul>
+<li>Each system scores 0–100: <b>100 − 12 × Z</b> while green, <b>82 − 40 × (Z − 1.5)</b> when yellow, <b>30</b> when red; fixed limits give 100 / 58 / 30. Minus <b>6</b> per extra warning.</li>
+<li>Weights: Heart 20% · Radiation 20% · Mind 15% · Eyes 15% · Immune 10% · Sleep 10% · Bones &amp; muscle 10%.</li>
+</ul>
+<span class="f">Score = weighted average − 9 × Yellow systems − 15 × Red systems
+Any Yellow → at most 89 · Any Red → at most 49</span>
+<p>The caps stop a good average from hiding one serious problem.</p>
+</section>
+
+<section>
+<h2><small>06 · Cabin Sensors</small>Why a CO₂ spot sensor on the tablet matters</h2>
+<p>On Earth, warm breath rises and fresh air mixes in. <b>In microgravity there is no convection</b>, so exhaled carbon dioxide can collect in an invisible pocket around a sleeping or working astronaut's face unless fans keep air moving. The cabin average can look fine while the air at one spot is much worse. A <b>spot sensor on the tablet</b> measures the air right where the astronaut is.</p>
+<h3>What high CO₂ does</h3>
+<ul>
+<li>Headaches, poorer concentration and slower decisions, which our memory and reaction tests can pick up.</li>
+<li>Widening of brain blood vessels; researchers think it may add to the eye problem <b>SANS</b>.</li>
+<li>Usually caused by a scrubber fault, a crowded module or poor ventilation.</li>
+</ul>
+<p>Earth air is about 0.3 mmHg CO₂ (≈400 ppm). The app shows mmHg, ppm and %, plus O₂, pressure, temperature and humidity. It shows <span class="g">green</span> below 2.5 mmHg and <span class="r">red</span> above 4 mmHg. Response: move to a ventilated area, increase airflow, check the scrubber, and repeat Test 03.</p>
+</section>
+
+<section>
+<h2><small>07 · Radiation dosimeter</small>The invisible risk, and its aftermath</h2>
+<p>Outside Earth's magnetic field the crew is hit by <b>galactic cosmic rays</b> all the time and, without much warning, by <b>solar particle events (solar storms)</b>. Radiation cannot be seen or felt, so only a dosimeter shows it.</p>
+<span class="f">Dose rate (µSv/h) = absorbed dose (µGy/h) × quality factor 3.6</span>
+<p>The app tracks dose rate, <b>dose today</b> and <b>career dose</b> against the 600 mSv limit. A dose rate of 417 µSv/h or more turns <span class="r">red</span> and sounds the alarm.</p>
+<h3>Aftermath of exposure</h3>
+<div class="sc"><table>
+<tr><th>When</th><th>Possible effects</th><th>What ZERO-GRAM does</th></tr>
+<tr><td><b>Hours–days</b> (large storm)</td><td>Nausea, vomiting, fatigue, falling blood cell counts</td><td>Alarm → shelter in the water-shielded area; symptoms and mood logged in Test 06</td></tr>
+<tr><td><b>Weeks</b></td><td>Lower immunity, anaemia risk, slower thinking</td><td>Blood-test reminder, Mind and Immune trends watched</td></tr>
+<tr><td><b>Years</b></td><td>Higher cancer risk, cataracts, heart and brain damage</td><td>Career dose kept in the Earth report and return-readiness score</td></tr>
+</table></div>
+<p class="n">Try the <b>Solar storm</b> and <b>CO₂ scrubber fault</b> demo buttons on the Cabin Sensors screen.</p>
+</section>
+
+<section>
+<h2><small>08 · VTE Monitor</small>Blood clots in weightlessness</h2>
+<p><b>Venous thromboembolism (VTE)</b> means a blood clot in a vein (thrombosis) that can break off and travel to the lungs (<b>pulmonary embolism</b>). In microgravity, body fluids shift towards the head and blood in the <b>neck (jugular) veins</b> can flow slowly or even backwards. A NASA study of ISS crew found a clot in one astronaut's neck vein and abnormal flow in several others.</p>
+<h3>Why it matters on the way to Mars</h3>
+<ul>
+<li>A lung clot can be <b>life-threatening within hours</b>, and Earth is minutes to hours away.</li>
+<li>No CT scanner or hospital on board; only ultrasound and a few blood tests.</li>
+<li>Blood thinners are limited and raise bleeding risk during spacewalks and injuries.</li>
+</ul>
+<h3>How the module works</h3>
+<ul>
+<li>Every <b>15 days</b> (or any time) the astronaut answers <b>6 questions</b> on leg swelling, pain, warmth and colour change, sudden breathlessness and chest pain: <i>Yes / No / Prefer not to answer</i>.</li>
+<li><b>Breathlessness or chest pain</b> → emergency warning and highest-priority <b>simulated transmission to Earth</b>. Other symptoms → Medical Officer review.</li>
+<li>D-dimer, Doppler ultrasound and blood-count results are entered by medical staff and <b>stored as entered, never interpreted</b>.</li>
+<li>No diagnosis, no probability and no "healthy" label: the module only flags who needs a doctor's look.</li>
+</ul>
+</section>
+
+<section>
+<h2><small>09 · Action Center, Pharmacy &amp; Trends</small>What to do next</h2>
+<ul>
+<li><b>Action Center:</b> for each non-green system, what we noticed, simple steps first, approved kit medicines with protocol cards, and when to call the Medical Officer.</li>
+<li><b>Pharmacy:</b> radiation-adjusted expiry <code>shelf life × 0.8</code>; run-out forecast <code>today + pills left ÷ daily use</code>; allergy blocks; warnings for drowsy medicines, ibuprofen with low fluids, pseudoephedrine with heart alerts, and zolpidem beyond 3 nights.</li>
+<li><b>Trends:</b> 30-day graphs with the personal normal band, and the health score compared this week vs last week vs first week.</li>
+<li><b>Crew &amp; Buddy:</b> privacy choices (Red is always shared) and an anonymous buddy flag.</li>
+</ul>
+</section>
+
+<section>
+<h2><small>10 · Reports to Earth</small>Tiny briefs and return readiness</h2>
+<p>A plain-text brief under 1 KB is queued for the next comms window (delay shown is simulated). <b>Earth-return readiness</b> = Bones 30% (ARED) + Heart 25% + Muscle 20% + Eyes 15% + Radiation 10%: <span class="g">Ready</span> ≥92% · <span class="y">Recondition</span> 80–91% · <span class="r">Medical review</span> &lt;80%.</p>
+</section>
+
+<section>
+<h2><small>11 · Limits &amp; honesty</small>What this prototype is and is not</h2>
+<ul>
+<li>All astronauts, sensor readings, blood and VTE records are <b>fictional demonstration data</b>.</li>
+<li>ZERO-GRAM is <b>decision support, not a diagnosis</b>; it does not replace an eye scan, blood tests, ultrasound or a doctor.</li>
+<li>All thresholds and weights are prototype choices that would need clinical validation. No real Earth communication takes place.</li>
+<li>Everything runs offline and is saved only on this device.</li>
+</ul>
+</section>
+<footer>PRANAVYOM ZERO-GRAM · NASA Space Apps 2026, Nagpur · <a href="crew.html">Enter mission →</a></footer>
+</div>
+</body>
+</html>
