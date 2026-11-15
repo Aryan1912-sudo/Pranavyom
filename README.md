@@ -106,7 +106,7 @@ flowchart LR
 ## 4. Live Demo & Screenshots
 
 - **Live app:** https://aryan1912-sudo.github.io/Pranavyom/
-- **Demo video:** 
+- **Demo video:** https://youtu.be/Tq9quBSzU6c
 
 **Try this path:** Welcome → **About** → back → **Enter mission** → pick an astronaut → do the check-in → open every sidebar item. On **Cabin Sensors**, press **Solar storm** to hear the alarm.
 
