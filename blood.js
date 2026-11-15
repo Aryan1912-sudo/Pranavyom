@@ -51,7 +51,7 @@ const when = st.due ? '<b class="m-red-text">Overdue by ' + (st.since - BLOOD_EV
 let html = identity('Blood Tests', 'Space anaemia check every ' + BLOOD_EVERY + ' days. Weightlessness destroys red blood cells faster, so we watch haemoglobin closely.');
 html += '<div class="m-grid3">' +
 '<div class="m-card glow-card"><p class="m-label">Blood test schedule</p><p class="m-big" style="font-size:2rem">' + (st.due ? 'Due now' : 'On track') + '</p>' + badge(st.due ? 'red' : 'green').replace(st.due ? 'Act now' : 'All good', st.due ? 'Test due' : 'Up to date') +
-'<p class="m-small">Last test: ' + (st.last.day < 0 ? 'pre-flight' : 'day ' + st.last.day) + ' (' + st.since + ' days ago). ' + when + '.</p><button class="cta" type="button" id="bloodAddBtn">+ Add today\'s report</button></div>' +
+'<p class="m-small">Last test: ' + (st.last.day < 0 ? 'pre-flight' : 'day ' + st.last.day) + ' (' + st.since + ' days ago). ' + when + '.</p><div class="m-row" style="justify-content:flex-start;gap:8px;margin:10px 0 0"><button class="cta" type="button" id="bloodAddBtn">+ Add today\'s report</button><button class="pill-btn small" type="button" id="bloodTestSound">🔊 Hear reminder</button></div></div>' +
 '<div class="m-card glow-card"><p class="m-label">Latest haemoglobin</p><p class="m-big m-' + BLOOD_FIELDS[0].lvl(st.last.hb) + '-text">' + st.last.hb.toFixed(1) + '<span> g/dL</span></p>' + badge(BLOOD_FIELDS[0].lvl(st.last.hb)) +
 '<p class="m-small">Pre-flight ' + first.hb.toFixed(1) + ' g/dL · change ' + (st.last.hb - first.hb).toFixed(1) + ' g/dL</p></div>' +
 '<div class="m-card glow-card"><p class="m-label">Anaemia risk</p><p class="m-big" style="font-size:2rem">' + { green: 'Low', yellow: 'Watch', red: 'High' }[st.level] + '</p>' + badge(st.level) +
@@ -105,13 +105,51 @@ markBloodSidebar();
 })();
 const bloodWire = wire;
 wire = function (name) { bloodWire(name); if (name === 'blood') wireBlood(); };
-/* Reminder: once a day, if the 30-day blood test is due */
+/* Blood-test reminder: its own heartbeat sound + a spoken message */
+let bloodCtx = null, bloodBus = null;
+function bloodSound() {
+if (PZSound.isMuted()) return;
+if (!bloodCtx) { const A = window.AudioContext || window.webkitAudioContext; if (!A) return; bloodCtx = new A(); }
+if (bloodCtx.state === 'suspended') bloodCtx.resume();
+if (!bloodBus) { bloodBus = bloodCtx.createGain(); bloodBus.connect(bloodCtx.destination); }
+const beat = function (freq, at, len, vol, type) {
+const o = bloodCtx.createOscillator(), g = bloodCtx.createGain(), t0 = bloodCtx.currentTime + at;
+o.type = type || 'sine'; o.frequency.setValueAtTime(freq, t0); o.frequency.exponentialRampToValueAtTime(freq * 0.7, t0 + len);
+g.gain.setValueAtTime(0.0001, t0); g.gain.exponentialRampToValueAtTime(vol, t0 + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t0 + len);
+o.connect(g); g.connect(bloodBus); o.start(t0); o.stop(t0 + len + 0.05);
+};
+beat(95, 0, 0.16, 0.5); beat(75, 0.2, 0.2, 0.45);            /* lub-dub */
+beat(95, 0.9, 0.16, 0.5); beat(75, 1.1, 0.2, 0.45);          /* lub-dub */
+beat(784, 1.7, 0.35, 0.1, 'triangle'); beat(1047, 2.05, 0.5, 0.1, 'triangle');   /* soft chime */
+}
+function bloodSpeak(text) {
+if (PZSound.isMuted() || !('speechSynthesis' in window)) return;
+speechSynthesis.cancel();
+const u = new SpeechSynthesisUtterance(text); u.rate = 0.95; u.pitch = 1; u.lang = 'en-GB';
+setTimeout(function () { speechSynthesis.speak(u); }, 2600);
+}
+const plainStop = stopBuzz;
+stopBuzz = function () {
+plainStop();
+if (bloodBus && bloodCtx) { bloodBus.gain.setTargetAtTime(0, bloodCtx.currentTime, 0.02); const old = bloodBus; setTimeout(function () { old.disconnect(); }, 200); bloodBus = null; }
+if ('speechSynthesis' in window) speechSynthesis.cancel();
+};
+function bloodReminder(test) {
+const st = bloodStatus(crew.id), late = Math.max(0, st.since - BLOOD_EVERY);
+const msg = test ? 'This is how the blood test reminder sounds.' : crew.name + ', your 30-day anaemia blood test is ' + (late ? late + ' day' + (late === 1 ? '' : 's') + ' overdue' : 'due today') + '. Last test: ' + (st.last.day < 0 ? 'pre-flight' : 'day ' + st.last.day) + '.';
+alarm('🩸 Blood test reminder', msg, 'blood', test ? 12 : 30);
+clearInterval(buzzLoop); PZSound.silence();               /* swap the normal buzzer for the blood sound */
+const bar = document.getElementById('pzBuzzer'); if (bar) bar.style.borderColor = '#b3002d';
+bloodSound(); buzzLoop = setInterval(bloodSound, 5000);
+bloodSpeak('Blood test reminder. ' + crew.name.replace(/^Dr\.\s*/, 'Doctor ') + ', it is time for your thirty day blood test, to check for space anaemia. Please take your sample today and add the report.');
+}
+document.addEventListener('click', function (e) { if (e.target.closest('#bloodTestSound')) bloodReminder(true); });
 setTimeout(function () {
 const st = bloodStatus(crew.id), key = 'pranavyom.bloodReminded.' + crew.id, today = new Date().toDateString();
 let seen = ''; try { seen = localStorage.getItem(key) || ''; } catch (e) { /* ignore */ }
-if (!st.due || seen === today || typeof alarm !== 'function') return;
+if (!st.due || seen === today) return;
 try { localStorage.setItem(key, today); } catch (e) { /* ignore */ }
-alarm('Blood test due', crew.name + ', your 30-day anaemia check is ' + (st.since - BLOOD_EVERY) + ' day(s) overdue. Last test: day ' + st.last.day + '.', 'blood', 20);
+bloodReminder(false);
 }, 4000);
 /* Add the latest blood result to the Action Center and the report to Earth */
 const actionScreen = SCREENS.action;
